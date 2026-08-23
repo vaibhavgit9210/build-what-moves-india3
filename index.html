@@ -1,0 +1,1612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CivicFlow: Learner's Licence (Karnataka demo)</title>
+<meta name="description" content="CivicFlow, a citizen-first redesign prototype of the Karnataka Learner's Licence journey. Demo only, not connected to any government service.">
+<style>
+/* ============ CivicFlow design tokens ============ */
+:root{
+  --navy:#0e2a47;          /* deep navy navigation */
+  --navy-ink:#dce8f5;
+  --blue:#1655c4;          /* civic blue primary actions */
+  --blue-strong:#0f3f95;
+  --blue-tint:#e9f0fc;
+  --amber:#8a5300;         /* warm amber attention (text) */
+  --amber-bg:#fff3d9;
+  --amber-border:#d9a021;
+  --green:#17693a;         /* success */
+  --green-bg:#e8f6ed;
+  --red:#b3261e;
+  --red-bg:#fdefee;
+  --ink:#1a2333;
+  --muted:#535f72;
+  --bg:#f3f5f8;
+  --surface:#ffffff;
+  --border:#d4dbe5;
+  --focus:#ffbf47;         /* focus ring, visible on light and dark */
+  --radius:14px;
+  --shadow:0 8px 24px rgba(14,42,71,.07);
+}
+*{box-sizing:border-box}
+html{font-size:16px}
+body{
+  margin:0;color:var(--ink);background:var(--bg);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height:1.55;
+}
+img{max-width:100%}
+h1{font-size:1.9rem;line-height:1.15;margin:.2em 0 .45em}
+h2{font-size:1.35rem;margin:1.2em 0 .4em}
+h3{font-size:1.08rem;margin:1em 0 .35em}
+p{margin:.4em 0 .8em}
+a{color:var(--blue)}
+ul{padding-left:1.2em}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip-link{position:absolute;left:-999px;top:8px;z-index:100;background:#fff;color:var(--ink);padding:10px 16px;border-radius:8px;font-weight:700}
+.skip-link:focus{left:8px}
+
+/* ============ Header / footer ============ */
+header.site{background:var(--navy);color:#fff}
+.site-inner{max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}
+.brand-mark{width:44px;height:44px;border-radius:10px;background:#fff;color:var(--blue);display:grid;place-items:center;font-weight:900;font-size:1.1rem;flex:none}
+.brand b{display:block;font-size:1.05rem}
+.brand small{color:var(--navy-ink)}
+.head-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.head-tools .label{color:var(--navy-ink);font-size:.9rem;margin-right:2px}
+.tool-btn{min-height:44px;min-width:44px;padding:8px 12px;border-radius:9px;border:1px solid #56718e;background:transparent;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.tool-btn:hover{background:#1d4067}
+footer.site{background:var(--navy);color:var(--navy-ink);margin-top:48px}
+footer.site .site-inner{display:block;padding:22px 20px;font-size:.92rem}
+
+/* ============ Layout ============ */
+main{max-width:1120px;margin:0 auto;padding:26px 20px 40px}
+.journey{display:grid;grid-template-columns:290px minmax(0,1fr);gap:22px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+.step-card{padding:28px 30px 0}
+.eyebrow{font-size:.8rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);margin-bottom:2px}
+.lead{color:var(--muted);font-size:1.05rem;max-width:62ch}
+
+/* ============ Progress stepper ============ */
+.prog{padding:16px 18px}
+.prog summary{cursor:pointer;font-weight:800;min-height:44px;display:flex;align-items:center;gap:8px;list-style:none}
+.prog summary::-webkit-details-marker{display:none}
+.prog summary::before{content:"▸";transition:transform .15s}
+.prog[open] summary::before{transform:rotate(90deg)}
+.pbar{height:10px;border-radius:6px;background:#e4e9f0;overflow:hidden;margin:10px 0 4px}
+.pbar > span{display:block;height:100%;background:var(--green)}
+.pct{font-size:.9rem;color:var(--muted);margin-bottom:8px}
+ol.steps{list-style:none;margin:8px 0 0;padding:0}
+ol.steps li{margin:0}
+.pstep{display:flex;gap:10px;align-items:flex-start;padding:8px 6px;border-radius:9px;color:var(--muted);text-decoration:none;min-height:44px}
+a.pstep:hover{background:var(--blue-tint)}
+.pstep .dot{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid #b7c2d1;background:#fff;display:grid;place-items:center;font-size:.78rem;font-weight:900;margin-top:1px}
+.pstep .ptxt{display:block}
+.pstep .pstate{display:block;font-size:.78rem;font-weight:400}
+.pstep.done{color:var(--green)}
+.pstep.done .dot{border-color:var(--green);background:var(--green-bg);color:var(--green)}
+.pstep.current{color:var(--blue);font-weight:800;background:var(--blue-tint)}
+.pstep.current .dot{border-color:var(--blue);color:var(--blue)}
+.pstep.action{color:var(--amber)}
+.pstep.action .dot{border-color:var(--amber-border);background:var(--amber-bg);color:var(--amber)}
+.pstep.locked{opacity:.75}
+
+/* ============ Buttons ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:10px;border:0;font:inherit;font-weight:800;font-size:1rem;cursor:pointer;text-decoration:none;text-align:center}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.primary:hover{background:var(--blue-strong)}
+.btn.secondary{background:#e8edf4;color:var(--ink);border:1px solid var(--border)}
+.btn.secondary:hover{background:#dde5ef}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--ink)}
+.btn.success{background:var(--green);color:#fff}
+.btn.warn{background:var(--amber-bg);color:var(--amber);border:1.5px solid var(--amber-border)}
+.btn[aria-disabled="true"],.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+.actionbar{position:sticky;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:rgba(255,255,255,.96);border-top:1px solid var(--border);margin:26px -30px 0;padding:14px 30px;border-radius:0 0 var(--radius) var(--radius);z-index:4}
+
+/* ============ Panels / notices ============ */
+.panel{border-left:5px solid var(--blue);background:var(--blue-tint);padding:14px 16px;border-radius:8px;margin:16px 0}
+.panel.warn{border-color:var(--amber-border);background:var(--amber-bg)}
+.panel.good{border-color:var(--green);background:var(--green-bg)}
+.panel.bad{border-color:var(--red);background:var(--red-bg)}
+.panel h3{margin-top:0}
+.panel p:last-child{margin-bottom:0}
+.error-summary{border:3px solid var(--red);border-radius:10px;padding:16px 18px;margin:0 0 20px;background:#fff}
+.error-summary h2{margin:0 0 8px;color:var(--red);font-size:1.15rem}
+.error-summary ul{margin:0}
+.error-summary a{color:var(--red);font-weight:700}
+
+/* ============ Forms ============ */
+.field{margin:16px 0;max-width:34rem}
+.field label{display:block;font-weight:800;margin-bottom:4px}
+.hint{display:block;color:var(--muted);font-size:.92rem;margin-bottom:6px}
+.field input[type=text],.field input[type=email],.field input[type=password],.field input[type=date],.field input[type=tel],.field select{
+  width:100%;min-height:44px;padding:9px 12px;border:1.5px solid #7a8798;border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+.field.invalid input,.field.invalid select{border-color:var(--red);background:#fffafa}
+.ferr{color:var(--red);font-weight:700;font-size:.94rem;margin-top:4px}
+.two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
+fieldset{border:0;padding:0;margin:16px 0}
+legend{font-weight:800;padding:0;margin-bottom:4px;font-size:1.02rem}
+.radio-row,.check-row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;min-height:44px}
+.radio-row input,.check-row input{width:24px;height:24px;flex:none;margin-top:2px;accent-color:var(--blue)}
+.radio-row label,.check-row label{font-weight:600}
+
+/* ============ Choice cards ============ */
+.choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin:16px 0}
+.choice{position:relative;text-align:left;border:2px solid var(--border);border-radius:12px;padding:16px;background:#fff;cursor:pointer;font:inherit;color:var(--ink)}
+.choice:hover{border-color:#8fb0ef}
+.choice.selected{border-color:var(--blue);background:var(--blue-tint)}
+.choice.selected::after{content:"✓ Selected";position:absolute;top:10px;right:12px;color:var(--blue);font-weight:800;font-size:.82rem}
+.choice[aria-disabled="true"]{opacity:.6;cursor:not-allowed}
+.choice .ic{font-size:1.7rem;display:block;margin-bottom:6px}
+.choice b{display:block;margin-bottom:2px}
+.choice .sub{color:var(--muted);font-size:.92rem;display:block}
+.choice .code{display:inline-block;margin-top:8px;font-size:.78rem;font-weight:800;color:var(--muted);background:#eef1f6;border-radius:6px;padding:2px 8px}
+
+/* ============ Review / summary ============ */
+.summary{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+.summary .srow{display:grid;grid-template-columns:170px 1fr auto;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center}
+.summary .srow:last-child{border-bottom:0}
+.summary .skey{color:var(--muted);font-size:.92rem}
+.summary .schange{font-weight:700;white-space:nowrap}
+@media(max-width:640px){.summary .srow{grid-template-columns:1fr;gap:2px}}
+
+/* ============ Status chips / checks / misc ============ */
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 12px;font-size:.85rem;font-weight:800;border:1.5px solid}
+.chip.done{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+.chip.action{color:var(--amber);border-color:var(--amber-border);background:var(--amber-bg)}
+.chip.todo{color:var(--muted);border-color:var(--border);background:#f2f4f8}
+.chip.current{color:var(--blue);border-color:var(--blue);background:var(--blue-tint)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:16px 0}
+.checkitem{border:1.5px solid var(--border);border-radius:12px;padding:14px}
+.checkitem .cstat{font-weight:800;margin-top:4px}
+.checkitem.ok{border-color:var(--green)}
+.checkitem.ok .cstat{color:var(--green)}
+.checkitem.bad{border-color:var(--red)}
+.checkitem.bad .cstat{color:var(--red)}
+.upload{border:2px dashed #97a5ba;border-radius:12px;padding:18px;margin:14px 0;background:#fbfcfe}
+.upload.okd{border-style:solid;border-color:var(--green);background:var(--green-bg)}
+.upload .req{color:var(--muted);font-size:.92rem;margin:4px 0 10px}
+.q-card{border:1.5px solid var(--border);border-radius:12px;padding:20px;margin:14px 0}
+.q-text{font-size:1.15rem;font-weight:800;margin-bottom:12px}
+.ans{display:grid;gap:10px}
+.ans .choice{padding:12px 14px}
+.palette{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.pal{width:44px;height:44px;border-radius:9px;border:2px solid var(--border);background:#fff;font-weight:800;cursor:pointer;font:inherit}
+.pal.answered{border-color:var(--green);background:var(--green-bg);color:var(--green)}
+.pal.now{border-color:var(--blue);background:var(--blue-tint);color:var(--blue)}
+.bigresult{text-align:center;padding:30px 20px;border-radius:12px;margin:16px 0}
+.bigresult .big{font-size:2.4rem}
+.bigresult.pass{background:var(--green-bg);border:2px solid var(--green)}
+.bigresult.fail{background:var(--amber-bg);border:2px solid var(--amber-border)}
+
+/* ============ Licence card ============ */
+.ll-card{border:2px solid var(--navy);border-radius:16px;overflow:hidden;background:#fff;max-width:620px;margin:18px 0}
+.ll-head{background:var(--navy);color:#fff;padding:14px 20px}
+.ll-head small{color:var(--navy-ink);display:block}
+.ll-body{display:grid;grid-template-columns:1fr 150px;gap:18px;padding:18px 20px}
+.ll-body .lrow{margin-bottom:9px}
+.ll-body .lk{display:block;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+.ll-photo{height:170px;border-radius:10px;background:#e8edf3;display:grid;place-items:center;color:#6b7787;font-weight:800;text-align:center}
+
+/* ============ Landing / dashboard ============ */
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:22px;align-items:stretch}
+.hero-main{padding:36px}
+.hero-side{padding:24px;background:var(--blue-tint);border:1px solid #c6d8f6}
+.hero-side .hs-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #c6d8f6}
+.hero-side .hs-row:last-child{border-bottom:0}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin:18px 0}
+.dash-card{padding:20px}
+.dash-num{font-size:1.5rem;font-weight:900}
+.next-action{border:2px solid var(--blue);background:var(--blue-tint);padding:24px}
+.help-details{margin:20px 0;border:1px solid var(--border);border-radius:10px}
+.help-details summary{padding:12px 16px;min-height:44px;display:flex;align-items:center;font-weight:800;cursor:pointer}
+.help-details .hd-body{padding:0 16px 14px;color:var(--ink)}
+.help-details .hd-src{font-size:.8rem;color:var(--muted);margin-top:8px}
+.demo-note{border:1.5px dashed var(--amber-border);background:var(--amber-bg);color:var(--amber);border-radius:10px;padding:10px 14px;margin:14px 0;font-size:.92rem}
+.otp-box{font-size:1.6rem;font-weight:900;letter-spacing:.35em;background:var(--navy);color:#fff;display:inline-block;padding:8px 18px;border-radius:10px}
+table.fees{border-collapse:collapse;margin:14px 0;min-width:280px}
+table.fees th,table.fees td{text-align:left;padding:8px 18px 8px 0;border-bottom:1px solid var(--border)}
+table.fees tfoot td{font-weight:900;border-bottom:0}
+
+@media(max-width:880px){
+  .journey{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr}
+  .step-card{padding:20px 18px 0}
+  .actionbar{margin:22px -18px 0;padding:12px 18px}
+  .two-col{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  header.site,footer.site,.actionbar,.head-tools,.prog,.btn-row{display:none!important}
+  body{background:#fff}
+  .card{box-shadow:none;border:0}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site">
+  <div class="site-inner">
+    <a class="brand" href="#/">
+      <span class="brand-mark" aria-hidden="true">CF</span>
+      <span><b>CivicFlow</b><small>Learner's Licence · Karnataka (demo)</small></span>
+    </a>
+    <div class="head-tools" role="group" aria-label="Display and account controls">
+      <span class="label" aria-hidden="true">Text size</span>
+      <button class="tool-btn" data-action="font-down" aria-label="Decrease text size">A−</button>
+      <button class="tool-btn" data-action="font-reset" aria-label="Reset text size">A</button>
+      <button class="tool-btn" data-action="font-up" aria-label="Increase text size">A+</button>
+      <span id="auth-slot"></span>
+    </div>
+  </div>
+</header>
+
+<main id="main" tabindex="-1"></main>
+
+<footer class="site">
+  <div class="site-inner">
+    <p><b>Prototype only.</b> CivicFlow is a design exercise using fictional data. It is not connected to Parivahan, Sarathi, Aadhaar, UIDAI, any payment gateway, any RTO, or any government service. Never enter real personal or payment details here.</p>
+    <p>State rules vary. Fees, documents, test availability and RTO jurisdiction shown here come from a demo Karnataka configuration, not from live government data.</p>
+  </div>
+</footer>
+
+<div id="announce" class="sr-only" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   CivicFlow prototype
+   Sections: CONTENT (versioned demo state config + help articles)
+             RULES   (deterministic eligibility / vehicle / RTO / fees)
+             STATE   (application state machine + localStorage persistence)
+             ROUTER  (hash routes, no personal data in URLs)
+             VIEWS   (render functions per screen)
+             ACTIONS (event delegation)
+             E2E     (?e2e= hooks for demos and screenshots)
+   ===================================================================== */
+
+/* ============ CONTENT: versioned demo state configuration ============ */
+const CONFIG = {
+  state: "Karnataka",
+  stateCode: "KA",
+  contentVersion: "KA-2026.08 (demo)",
+  onlineTestAvailable: true,   /* state dependent in the real service */
+  feePerClass: 150,
+  testFee: 50,
+  retestFee: 50,
+  licenceValidityMonths: 6
+};
+
+const VEHICLES = [
+  { id:"MCWOG", title:"Motorcycle without gear", sub:"For example a scooter or moped.", ic:"🛵", minAge:16, guardianUnder18:true },
+  { id:"MCWG",  title:"Motorcycle with gear",    sub:"For example a geared motorcycle.", ic:"🏍️", minAge:18 },
+  { id:"LMV",   title:"Private car",             sub:"A car, jeep or van for personal use.", ic:"🚗", minAge:18 }
+];
+const VEHICLE_BY_ID = Object.fromEntries(VEHICLES.map(v => [v.id, v]));
+
+const RTOS = [
+  { code:"KA-01", name:"Bengaluru Central" },
+  { code:"KA-02", name:"Bengaluru West" },
+  { code:"KA-03", name:"Bengaluru East" },
+  { code:"KA-04", name:"Bengaluru North" },
+  { code:"KA-05", name:"Bengaluru South" },
+  { code:"KA-41", name:"Gnanabharathi" }
+];
+/* Demo PIN to RTO mapping. Unknown PINs exercise the recovery flow. */
+const RTO_BY_PIN = {
+  "560001":"KA-01","560002":"KA-01","560009":"KA-01",
+  "560010":"KA-02","560021":"KA-02","560086":"KA-02",
+  "560038":"KA-03","560008":"KA-03","560075":"KA-03","560093":"KA-03",
+  "560064":"KA-04","560092":"KA-04",
+  "560011":"KA-05","560041":"KA-05","560078":"KA-05",
+  "560056":"KA-41","560060":"KA-41"
+};
+
+/* "Explain this" help articles. In production these would be retrieved
+   from approved, versioned government content. No LLM decides anything
+   here: eligibility, fees, RTO and payment status are all deterministic. */
+const HELP = {
+  start: { q:"Why do I see this page first?", a:"So there are no surprises later. The old flow revealed requirements one screen at a time, so people discovered a missing document or fee at the worst moment. This page lists everything up front." },
+  eligibility: { q:"Why these questions?", a:"They replace licence category jargon with plain questions. Your answers decide which application types and vehicle options apply to you. Nothing is submitted yet." },
+  vehicle: { q:"What are MCWOG, MCWG and LMV?", a:"They are the official licence category codes: MCWOG is motorcycle without gear, MCWG is motorcycle with gear, LMV is light motor vehicle such as a private car. You choose in plain language and CivicFlow records the code for you." },
+  details: { q:"Why do you need my details?", a:"Your name and date of birth must match your identity document, otherwise the RTO cannot approve the application. Your mobile number is used for updates about this application only." },
+  address: { q:"Why does my address decide the RTO?", a:"Each Regional Transport Office serves a geographic area. Your current residential address decides which office is responsible for your application and test. That is why we ask for the PIN code first." },
+  identity: { q:"Why verify my identity?", a:"The licence is a legal document, so the transport department must confirm you are who you say you are. Aadhaar eKYC is the fastest route because it can also fetch your photo. If you cannot or do not want to use Aadhaar, the alternate route uses physical documents instead." },
+  documents: { q:"Why these documents?", a:"The list is generated from your earlier answers and your state's rules. If Aadhaar eKYC already provided something, such as your photo, we do not ask for it again." },
+  review: { q:"Why review again?", a:"After payment, corrections may need an RTO visit. This is the last cheap moment to fix anything, especially the vehicle categories, which decide what your licence will allow." },
+  payment: { q:"What if my money is deducted but nothing happens?", a:"Banks sometimes confirm a payment before the application system hears about it. If that happens, do not pay again. Use Check payment status, which asks the payment provider directly. Duplicate payments are the single most common cause of refund complaints." },
+  readiness: { q:"Why check my device now?", a:"The online test uses your camera and microphone to confirm you are taking it yourself. Finding a problem now costs you two minutes. Finding it during the test could cost you the attempt." },
+  practice: { q:"Does the practice test count?", a:"No. It uses the same format as the real test but the score is never recorded. Take it as many times as you like." },
+  test: { q:"What happens if I fail?", a:"Nothing is lost. Your application stays intact. You pay a small retest fee and book a new slot, both from the same screen. You never restart the application." },
+  licence: { q:"Is this the real licence?", a:"In the real service this would be the digitally signed learner's licence, valid for six months while you learn. In this prototype it is a fictional preview." }
+};
+
+/* ============ Test questions (fictional bank) ============ */
+const PRACTICE_QS = [
+  { q:"A red traffic signal means:", a:["Slow down and continue","Stop behind the stop line","Sound the horn and proceed","Switch on hazard lights"], c:1, why:"Red always means a complete stop behind the line, even if the road looks empty." },
+  { q:"At a zebra crossing with a pedestrian waiting, you should:", a:["Speed up to pass first","Flash headlights and continue","Slow down and let them cross","Sound the horn"], c:2, why:"Pedestrians have priority at zebra crossings." },
+  { q:"A triangular road sign with a red border is:", a:["A mandatory instruction","A warning of a hazard ahead","An information sign","A parking sign"], c:1, why:"Triangles warn. Circles give orders. Rectangles inform." },
+  { q:"Using a handheld mobile phone while driving is:", a:["Fine below 20 km/h","Fine when stopped at a signal","Never allowed while driving","Allowed for short calls"], c:2, why:"Handheld phone use while driving is an offence and a leading cause of crashes." },
+  { q:"When an ambulance approaches with its siren on, you should:", a:["Maintain your speed and lane","Move aside and give way","Overtake it quickly","Stop exactly where you are in the lane"], c:1, why:"Give way to emergency vehicles by moving to the side safely." }
+];
+const TEST_QS = [
+  { q:"An octagonal (eight sided) red sign means:", a:["Give way","Stop completely","No parking","Speed limit ends"], c:1 },
+  { q:"Overtaking on a narrow bridge or a sharp curve is:", a:["Allowed if you sound the horn","Allowed for two wheelers","Not allowed","Allowed during daytime"], c:2 },
+  { q:"Driving after drinking alcohol is:", a:["Allowed below a small limit for learners","A punishable offence","Allowed on private roads only","Allowed with a companion"], c:1 },
+  { q:"A circular sign with a red border and a number, for example 40, means:", a:["Minimum speed 40","Route number 40","Maximum speed 40","Distance 40 km"], c:2 },
+  { q:"Seat belts must be worn by:", a:["Only the driver","Only front seat occupants","Everyone with a belt provided","Nobody inside city limits"], c:2 },
+  { q:"At an unmarked junction with a pedestrian already crossing, you should:", a:["Sound the horn to warn them","Let them finish crossing","Drive around behind them","Speed up to pass in front"], c:1 },
+  { q:"A safe following distance matters most because it gives you:", a:["Better fuel economy","Time to stop if the vehicle ahead brakes","A clearer view of shops","Less tyre wear"], c:1 },
+  { q:"Sounding the horn in a silence zone, such as near a hospital, is:", a:["Allowed briefly","Prohibited","Required by law","Allowed at night only"], c:1 },
+  { q:"While holding a learner's licence you must:", a:["Drive only after sunrise","Display an L plate and ride or drive with a licensed supervisor as required","Use only private roads","Carry a photocopy of someone else's licence"], c:1 },
+  { q:"Before changing lanes you should:", a:["Signal, check mirrors and blind spot, then move","Move first, then signal","Sound the horn and move immediately","Slow to a stop, then move"], c:0 }
+];
+const PASS_MARK = 6;
+
+/* ============ RULES: deterministic services ============ */
+function ageOn(dobStr, onDate){
+  const dob = new Date(dobStr + "T00:00:00");
+  if (isNaN(dob)) return null;
+  const now = onDate || new Date();
+  let age = now.getFullYear() - dob.getFullYear();
+  const m = now.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
+  return age;
+}
+function vehicleAllowed(vehicleId, age){
+  const v = VEHICLE_BY_ID[vehicleId];
+  return v && age !== null && age >= v.minAge;
+}
+function rtoForPin(pin){
+  const code = RTO_BY_PIN[pin];
+  return code ? RTOS.find(r => r.code === code) : null;
+}
+function rtoLabel(code){
+  const r = RTOS.find(x => x.code === code);
+  return r ? (r.code + " " + r.name) : (code || "Not selected");
+}
+function feeBreakdown(vehicleIds){
+  const rows = vehicleIds.map(id => ({ label:"Application fee: " + VEHICLE_BY_ID[id].title, amount:CONFIG.feePerClass }));
+  rows.push({ label:"Learner's licence test fee", amount:CONFIG.testFee });
+  return { rows, total: rows.reduce((n,r)=>n+r.amount,0) };
+}
+
+/* ============ Demo account (fictional, deliberately public) ============ */
+const DEMO_USER = {
+  email: "aarav.demo@example.com",
+  password: "Demo@123", /* gitleaks:allow */
+  name: "Aarav Sharma"
+};
+const DEMO_SEED = {
+  name:"Aarav Sharma", dob:"2003-11-14", gender:"Male", mobile:"9876543210",
+  email:"aarav.demo@example.com", addressLine:"24, 3rd Cross, Indiranagar",
+  city:"Bengaluru", district:"Bengaluru Urban", pin:"560038", rto:"KA-03"
+};
+const DEMO_OTP = "123456";
+const APP_NUMBER = "LL-KA-2026-10482";
+
+/* ============ STATE ============ */
+const STEPS = [
+  { id:"start",       label:"Before you start" },
+  { id:"eligibility", label:"Eligibility" },
+  { id:"vehicle",     label:"What you want to drive" },
+  { id:"details",     label:"Your details" },
+  { id:"address",     label:"Address and RTO" },
+  { id:"identity",    label:"Identity verification" },
+  { id:"documents",   label:"Documents" },
+  { id:"review",      label:"Review" },
+  { id:"payment",     label:"Payment" },
+  { id:"readiness",   label:"Test readiness" },
+  { id:"practice",    label:"Practice test" },
+  { id:"test",        label:"Learner's licence test" },
+  { id:"licence",     label:"Download licence" }
+];
+const STEP_INDEX = Object.fromEntries(STEPS.map((s,i)=>[s.id,i]));
+const STORE_KEY = "civicflow.v1";
+
+function blankApplication(){
+  return {
+    number: null,
+    steps: {},               /* stepId -> "done" | "action" */
+    data: {
+      eligibility: { existing:null, dob:"", proceedAnyway:false },
+      vehicles: [],
+      details: { name:"", gender:"", mobile:"", email:"", guardianName:"", guardianConsent:false },
+      address: { line:"", city:"", district:"", pin:"", rto:"", rtoManual:false, pinNotFound:false, reported:false },
+      identity: { method:null, otpSent:false, verified:false, altDoc:"" },
+      documents: { uploads:{} },   /* docId -> {name, sizeKB} */
+      review: { confirmedVehicles:false, declared:false },
+      payment: { status:"ready", txn:null, outcome:"success" },
+      readiness: { done:false, results:null, failDemo:false },
+      practice: { idx:0, picked:null, score:0, answered:0, finished:false },
+      test: { answers:{}, idx:0, submitted:false, score:null, attempt:1, retestPaid:false, retestSlot:null }
+    }
+  };
+}
+let S = {
+  user: null,
+  app: null,
+  fontScale: 1,
+  route: { name:"landing" },
+  errors: [],
+  returnToReview: false
+};
+function save(){
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({ user:S.user, app:S.app, fontScale:S.fontScale }));
+  } catch(e) {}
+}
+function load(){
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d && typeof d === "object") {
+      S.user = d.user || null;
+      S.app = d.app || null;
+      S.fontScale = d.fontScale || 1;
+    }
+  } catch(e) {}
+}
+function markDone(stepId){ S.app.steps[stepId] = "done"; save(); }
+function stepStatus(stepId){
+  if (!S.app) return "not-started";
+  const st = S.app.steps[stepId];
+  if (st) return st;
+  return stepId === currentStepId() ? "current" : "not-started";
+}
+function currentStepId(){
+  if (!S.app) return "start";
+  for (const s of STEPS) {
+    const st = S.app.steps[s.id];
+    if (st !== "done") return s.id;
+  }
+  return "licence";
+}
+function stepUnlocked(stepId){
+  if (!S.app) return stepId === "start";
+  const idx = STEP_INDEX[stepId];
+  const curIdx = STEP_INDEX[currentStepId()];
+  return idx <= curIdx;
+}
+function donePct(){
+  if (!S.app) return 0;
+  const done = STEPS.filter(s => S.app.steps[s.id] === "done").length;
+  return Math.round(done / STEPS.length * 100);
+}
+function applicantAge(){
+  const dob = S.app && S.app.data.eligibility.dob;
+  return dob ? ageOn(dob) : null;
+}
+
+/* ============ ROUTER (no personal data ever goes in the URL) ============ */
+function parseRoute(){
+  const h = (location.hash || "#/").replace(/^#/, "");
+  if (h === "/" || h === "") return { name: (S.user || S.app) ? "dashboard" : "landing" };
+  if (h === "/signin") return { name:"signin" };
+  if (h === "/dashboard") return { name:"dashboard" };
+  const m = h.match(/^\/apply\/([a-z]+)$/);
+  if (m && STEP_INDEX[m[1]] !== undefined) return { name:"step", step:m[1] };
+  return { name:"landing" };
+}
+function go(hash){ location.hash = hash; }
+function onRoute(){
+  let r = parseRoute();
+  if (r.name === "step") {
+    if (!S.app) { go("#/"); return; }
+    if (!stepUnlocked(r.step)) { r = { name:"step", step: currentStepId() }; location.hash = "#/apply/" + r.step; return; }
+  }
+  if (r.name === "dashboard" && !S.app && !S.user) r = { name:"landing" };
+  S.route = r;
+  S.errors = [];
+  render();
+}
+
+/* ============ RENDER CORE ============ */
+const $main = document.getElementById("main");
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function announce(msg){ document.getElementById("announce").textContent = msg; }
+function render(){
+  document.documentElement.style.fontSize = (16 * S.fontScale) + "px";
+  renderAuthSlot();
+  let html = "", title = "";
+  switch (S.route.name) {
+    case "landing":  html = viewLanding();  title = "CivicFlow, apply for a learner's licence"; break;
+    case "signin":   html = viewSignin();   title = "Sign in"; break;
+    case "dashboard":html = viewDashboard();title = "Your application dashboard"; break;
+    case "step":     html = viewJourney(S.route.step); title = STEPS[STEP_INDEX[S.route.step]].label; break;
+  }
+  $main.innerHTML = html;
+  const h1 = $main.querySelector("h1");
+  if (h1) { h1.setAttribute("tabindex","-1"); h1.focus({ preventScroll:true }); }
+  window.scrollTo(0,0);
+  const errSum = document.getElementById("error-summary");
+  if (errSum) errSum.focus();
+  announce(title);
+}
+function renderAuthSlot(){
+  const el = document.getElementById("auth-slot");
+  el.innerHTML = S.user
+    ? '<button class="tool-btn" data-action="signout">Sign out (' + esc(S.user.name.split(" ")[0]) + ')</button>'
+    : '<a class="tool-btn" style="display:inline-flex;align-items:center;text-decoration:none" href="#/signin">Sign in</a>';
+}
+
+/* ============ SHARED COMPONENTS ============ */
+function errorSummary(){
+  if (!S.errors.length) return "";
+  return '<div class="error-summary" id="error-summary" role="alert" tabindex="-1">'
+    + '<h2>There is a problem</h2><ul>'
+    + S.errors.map(e => '<li><a href="#' + esc(e.id) + '" data-action="focus-field" data-target="' + esc(e.id) + '">' + esc(e.msg) + "</a></li>").join("")
+    + "</ul></div>";
+}
+function fieldError(id){
+  const e = S.errors.find(x => x.id === id);
+  return e ? '<p class="ferr" id="err-' + esc(id) + '"><span class="sr-only">Error: </span>' + esc(e.msg) + "</p>" : "";
+}
+function fieldCls(id){ return S.errors.some(x => x.id === id) ? "field invalid" : "field"; }
+function ariaErr(id){
+  return S.errors.some(x => x.id === id) ? ' aria-invalid="true" aria-describedby="err-' + id + '"' : "";
+}
+function helpBox(stepId){
+  const h = HELP[stepId];
+  if (!h) return "";
+  return '<details class="help-details"><summary>Explain this: ' + esc(h.q) + "</summary>"
+    + '<div class="hd-body"><p>' + esc(h.a) + "</p>"
+    + '<p class="hd-src">From approved content, version ' + esc(CONFIG.contentVersion) + ". In production an optional assistant would answer only from this retrieved content; it never decides eligibility, fees, categories, RTO, payment or identity.</p></div></details>";
+}
+function stepper(activeId){
+  const items = STEPS.map((s, i) => {
+    const st = S.app && S.app.steps[s.id] === "done" ? "done"
+      : S.app && S.app.steps[s.id] === "action" ? "action"
+      : s.id === activeId ? "current"
+      : "todo";
+    const unlocked = stepUnlocked(s.id);
+    const stateWord = st === "done" ? "Completed" : st === "action" ? "Action required" : st === "current" ? "Current step" : "Not started";
+    const dot = st === "done" ? "✓" : st === "action" ? "!" : String(i + 1);
+    const inner = '<span class="dot" aria-hidden="true">' + dot + '</span><span class="ptxt">' + esc(s.label) + '<span class="pstate">' + stateWord + "</span></span>";
+    if (unlocked && S.app) {
+      return '<li><a class="pstep ' + st + '" href="#/apply/' + s.id + '"' + (s.id === activeId ? ' aria-current="step"' : "") + ">" + inner + "</a></li>";
+    }
+    return '<li><span class="pstep locked ' + st + '">' + inner + "</span></li>";
+  }).join("");
+  const pct = donePct();
+  return '<div class="card"><details class="prog" open>'
+    + '<summary>Your application: ' + pct + "% complete</summary>"
+    + '<div class="prog-body"><div class="pbar" role="img" aria-label="' + pct + ' percent complete"><span style="width:' + pct + '%"></span></div>'
+    + '<p class="pct">Step ' + (STEP_INDEX[activeId] + 1) + " of " + STEPS.length + "</p>"
+    + '<ol class="steps">' + items + "</ol>"
+    + (S.app ? '<p style="margin:10px 0 0"><a href="#/dashboard">Go to dashboard</a></p>' : "")
+    + "</div></details></div>";
+}
+function actionBar(opts){
+  const backHtml = opts.back ? '<a class="btn secondary" href="' + opts.back + '">Back</a>' : "<span></span>";
+  const nextHtml = opts.nextLabel
+    ? '<button class="btn primary" data-action="' + opts.nextAction + '">' + esc(opts.nextLabel) + "</button>"
+    : (opts.nextRaw || "");
+  return '<div class="actionbar">' + backHtml + '<span style="display:flex;gap:12px;flex-wrap:wrap">'
+    + (S.app ? '<a class="btn ghost" href="#/dashboard">Save and exit</a>' : "")
+    + nextHtml + "</span></div>";
+}
+function stepHead(stepId, sub){
+  const i = STEP_INDEX[stepId];
+  return '<div class="eyebrow">Step ' + (i+1) + " of " + STEPS.length + '</div><h1>' + esc(STEPS[i].label) + '</h1><p class="lead">' + sub + "</p>";
+}
+function nextStepLabel(stepId){
+  const i = STEP_INDEX[stepId];
+  return i + 1 < STEPS.length ? STEPS[i+1].label : "";
+}
+
+/* ============ VIEWS: landing / signin / dashboard ============ */
+function viewLanding(){
+  return '<section class="hero">'
+    + '<div class="card hero-main">'
+    + '<div class="eyebrow">A calmer way to apply</div>'
+    + "<h1>Get your learner's licence without the maze.</h1>"
+    + '<p class="lead">One guided journey that always answers three questions: where am I, what do I need to do, and what happens next. No hunting through menus.</p>'
+    + '<div class="btn-row">'
+    + '<button class="btn primary" data-action="start-new">Start a new application</button>'
+    + '<a class="btn secondary" href="#/signin">Sign in to continue an application</a>'
+    + "</div>"
+    + '<div class="panel good"><h3>Built around real problems</h3><p>Persistent progress, plain language instead of system jargon, requirements shown up front, safe recovery when a payment or test goes wrong, and one journey from eligibility to licence download.</p></div>'
+    + '<div class="demo-note"><b>Demo only.</b> Everything here is fictional. No real Aadhaar, OTP, money or government system is involved.</div>'
+    + "</div>"
+    + '<aside class="card hero-side"><h2>What changes</h2>'
+    + '<div class="hs-row"><span>Old mental model</span><b>"Which menu?"</b></div>'
+    + '<div class="hs-row"><span>New mental model</span><b>"What is next?"</b></div>'
+    + '<div class="hs-row"><span>Progress</span><b>Always visible</b></div>'
+    + '<div class="hs-row"><span>Payment gone wrong</span><b>Guided recovery</b></div>'
+    + '<div class="hs-row"><span>Failed the test</span><b>Retest in one place</b></div>'
+    + "</aside></section>";
+}
+function viewSignin(){
+  return '<section style="max-width:560px;margin:0 auto"><div class="card" style="padding:30px">'
+    + errorSummary()
+    + '<div class="eyebrow">Demo sign in</div><h1>Continue your application</h1>'
+    + '<p class="lead">Use the fictional demo account. No real credentials work here.</p>'
+    + '<div class="panel"><b>Demo account</b><br>Email: aarav.demo@example.com<br>Password: Demo@123</div>' /* gitleaks:allow */
+    + '<form id="signin-form" novalidate>'
+    + '<div class="' + fieldCls("si-email") + '"><label for="si-email">Email</label>'
+    + '<input id="si-email" type="email" autocomplete="username" value="aarav.demo@example.com"' + ariaErr("si-email") + ">" + fieldError("si-email") + "</div>"
+    + '<div class="' + fieldCls("si-pass") + '"><label for="si-pass">Password</label>'
+    + '<input id="si-pass" type="password" autocomplete="current-password"' + ariaErr("si-pass") + ">" + fieldError("si-pass") + "</div>"
+    + '<div class="btn-row"><button class="btn primary" type="submit">Sign in and continue</button>'
+    + '<a class="btn secondary" href="#/">Back</a></div>'
+    + "</form></div></section>";
+}
+function nextActionInfo(){
+  const cur = currentStepId();
+  const payStatus = S.app ? S.app.data.payment.status : "ready";
+  if (S.app && S.app.steps.payment === "action" && payStatus === "uncertain") {
+    return { title:"Resolve your payment", desc:"Your last payment attempt is unconfirmed. Do not pay again yet. Check the payment status first.", btn:"Check payment status", href:"#/apply/payment" };
+  }
+  if (S.app && S.app.steps.test === "action") {
+    return { title:"Book your retest", desc:"Your last test attempt did not pass. Pay the retest fee and book a new slot. Your application is unaffected.", btn:"Pay retest fee and book retest", href:"#/apply/test" };
+  }
+  const map = {
+    start:      { t:"Start your application", d:"A short orientation shows what you need before any form appears.", b:"Start: Before you start" },
+    eligibility:{ t:"Check your eligibility", d:"A few plain questions decide which options apply to you.", b:"Continue to Eligibility" },
+    vehicle:    { t:"Choose what you want to drive", d:"Pick everyday vehicle types. CivicFlow maps them to licence categories.", b:"Choose vehicles" },
+    details:    { t:"Fill in your details", d:"Name, date of birth and contact details, matching your ID.", b:"Continue to Your details" },
+    address:    { t:"Confirm your address and RTO", d:"Your current address decides the responsible RTO.", b:"Continue to Address and RTO" },
+    identity:   { t:"Verify your identity", d:"Use the demo Aadhaar route or an alternate document route.", b:"Continue to Identity" },
+    documents:  { t:"Provide your documents", d:"Only what your choices require. Nothing already covered by eKYC.", b:"Continue to Documents" },
+    review:     { t:"Review your application", d:"Check everything, especially the vehicle categories, before paying.", b:"Review my application" },
+    payment:    { t:"Pay the application fee", d:"A demo payment with honest status reporting.", b:"Go to Payment" },
+    readiness:  { t:"Check your device", d:"Test camera, microphone, browser and connection before the real test.", b:"Check my device" },
+    practice:   { t:"Take the practice test", d:"Five sample questions. The score is never recorded.", b:"Take practice test" },
+    test:       { t:"Take the learner's licence test", d:"Ten questions. You need " + PASS_MARK + " correct to pass.", b:"Start the test" },
+    licence:    { t:"Download your learner's licence", d:"You passed. Your demo licence is ready.", b:"Download learner licence" }
+  };
+  const m = map[cur];
+  return { title:m.t, desc:m.d, btn:m.b, href:"#/apply/" + cur };
+}
+function viewDashboard(){
+  if (!S.app) {
+    return '<section style="max-width:640px;margin:0 auto"><div class="card" style="padding:30px">'
+      + "<h1>No application yet</h1>"
+      + '<p class="lead">' + (S.user ? "Welcome, " + esc(S.user.name) + ". " : "") + "You have not started an application in this browser.</p>"
+      + '<div class="btn-row"><button class="btn primary" data-action="start-new">Start a new application</button></div>'
+      + "</div></section>";
+  }
+  const pct = donePct();
+  const next = nextActionInfo();
+  const chips = STEPS.map(s => {
+    const st = S.app.steps[s.id] === "done" ? "done" : S.app.steps[s.id] === "action" ? "action" : s.id === currentStepId() ? "current" : "todo";
+    const word = st === "done" ? "✓" : st === "action" ? "!" : st === "current" ? "→" : "·";
+    return '<span class="chip ' + st + '">' + word + " " + esc(s.label) + "</span>";
+  }).join(" ");
+  return "<section>"
+    + '<div class="eyebrow">Your application</div>'
+    + "<h1>" + (S.user ? "Welcome back, " + esc(S.user.name.split(" ")[0]) : "Application dashboard") + "</h1>"
+    + '<div class="dash-grid">'
+    + '<div class="card dash-card"><span class="hint">Application number</span><div class="dash-num">' + (S.app.number ? esc(S.app.number) : "Assigned after payment") + "</div></div>"
+    + '<div class="card dash-card"><span class="hint">Progress</span><div class="dash-num">' + pct + "% complete</div>"
+    + '<div class="pbar" role="img" aria-label="' + pct + ' percent complete"><span style="width:' + pct + '%"></span></div></div>'
+    + '<div class="card dash-card"><span class="hint">Current status</span><div class="dash-num" style="font-size:1.1rem">' + esc(nextStatusLine()) + "</div></div>"
+    + "</div>"
+    + '<div class="card next-action"><div class="eyebrow">Your next action</div>'
+    + "<h2 style='margin-top:4px'>" + esc(next.title) + "</h2><p>" + esc(next.desc) + "</p>"
+    + '<a class="btn primary" href="' + next.href + '">' + esc(next.btn) + "</a></div>"
+    + "<h2>All steps</h2><p>" + chips + "</p>"
+    + '<div class="btn-row" style="margin-top:26px"><button class="btn ghost" data-action="reset-app">Delete this demo application and start over</button></div>'
+    + "</section>";
+}
+function nextStatusLine(){
+  if (S.app.steps.payment === "action") return "Payment needs attention";
+  if (S.app.steps.test === "action") return "Retest needed";
+  if (S.app.steps.licence === "done") return "Licence issued (demo)";
+  if (S.app.number) return "Submitted, in progress";
+  return "Draft, not yet submitted";
+}
+
+/* ============ VIEWS: the 13 journey steps ============ */
+function viewJourney(stepId){
+  const body = STEP_VIEWS[stepId]();
+  return '<div class="journey">' + stepper(stepId) + '<section class="card step-card">' + errorSummary() + body + "</section></div>";
+}
+
+const STEP_VIEWS = {
+  /* 1 ---- Before you start ---- */
+  start(){
+    return stepHead("start", "A 30 second orientation so nothing surprises you halfway through.")
+      + '<div class="choice-grid">'
+      + card("⏱","About 15 to 20 minutes","You can save and come back any time. Progress stays on this device.")
+      + card("🪪","An accepted identity document","This demo uses Aadhaar as the example. An alternate document route is available.")
+      + card("📱","A mobile number you can access","Used for identity verification and application updates.")
+      + card("📷","A camera and microphone, maybe","In " + CONFIG.state + " (demo configuration) the test can be taken online, which needs both. Some states require a visit to the RTO instead.")
+      + "</div>"
+      + '<h2>Indicative fee</h2>'
+      + "<p>For this demo configuration: ₹" + CONFIG.feePerClass + " per vehicle category plus ₹" + CONFIG.testFee + " for the test. The exact amount is confirmed on the Payment step before you pay anything.</p>"
+      + '<div class="panel warn"><h3>State rules vary</h3><p>Fees, documents, online test availability and RTO rules differ by state. Everything in this prototype comes from a demo ' + CONFIG.state + " configuration, never hard coded claims about all of India.</p></div>"
+      + helpBox("start")
+      + actionBar({ back:"#/", nextAction:"finish-start", nextLabel:"Start: check my eligibility" });
+    function card(ic,t,s){ return '<div class="choice" role="listitem"><span class="ic" aria-hidden="true">' + ic + "</span><b>" + t + '</b><span class="sub">' + s + "</span></div>"; }
+  },
+
+  /* 2 ---- Eligibility ---- */
+  eligibility(){
+    const e = S.app.data.eligibility;
+    const age = e.dob ? ageOn(e.dob) : null;
+    let agePanel = "";
+    if (e.dob && age !== null) {
+      if (age < 16) agePanel = '<div class="panel bad"><h3>Not eligible yet</h3><p>You are ' + age + ". The minimum age is 16 for a motorcycle without gear and 18 for other categories. You can come back when you are old enough.</p></div>";
+      else if (age < 18) agePanel = '<div class="panel warn"><h3>You are ' + age + '</h3><p>You can apply for a motorcycle without gear (for example a scooter) with a parent or guardian\'s consent. Cars and geared motorcycles need you to be 18.</p></div>';
+      else agePanel = '<div class="panel good"><p>You are ' + age + ", old enough for every learner category in this demo.</p></div>";
+    }
+    return stepHead("eligibility", "Plain questions instead of licence jargon. Nothing is submitted yet.")
+      + '<form id="elig-form" novalidate>'
+      + '<fieldset><legend>Do you already hold an Indian licence?</legend>'
+      + '<span class="hint">This journey is for a first learner\'s licence.</span>'
+      + radio("elig-existing","none","No, this is my first licence", e.existing === "none")
+      + radio("elig-existing","ll","I already have a learner's licence", e.existing === "ll")
+      + radio("elig-existing","dl","I already have a driving licence", e.existing === "dl")
+      + fieldError("elig-existing-none")
+      + "</fieldset>"
+      + (e.existing && e.existing !== "none"
+          ? '<div class="panel warn"><h3>A different service may fit better</h3><p>Renewals, retests for an existing learner\'s licence, and adding a category to a driving licence are separate services in the live system. For this demo you can still continue with a fresh application.</p>'
+            + '<div class="check-row"><input type="checkbox" id="elig-anyway"' + (e.proceedAnyway ? " checked" : "") + '><label for="elig-anyway">Continue with a first time application anyway (demo)</label></div>' + fieldError("elig-anyway") + "</div>"
+          : "")
+      + '<div class="' + fieldCls("elig-dob") + '"><label for="elig-dob">Your date of birth</label>'
+      + '<span class="hint">Decides which vehicle categories you can apply for.</span>'
+      + '<input type="date" id="elig-dob" value="' + esc(e.dob) + '" autocomplete="bday"' + ariaErr("elig-dob") + ">" + fieldError("elig-dob") + "</div>"
+      + agePanel
+      + '<div class="field"><label for="elig-state">State</label>'
+      + '<span class="hint">Only ' + CONFIG.state + " is configured in this demo. Rules come from state configuration.</span>"
+      + '<select id="elig-state"><option>' + CONFIG.state + "</option></select></div>"
+      + helpBox("eligibility")
+      + actionBar({ back:"#/apply/start", nextAction:"finish-eligibility", nextLabel:"Save and continue to " + nextStepLabel("eligibility") })
+      + "</form>";
+    function radio(name,val,label,checked){
+      const id = name + "-" + val;
+      return '<div class="radio-row"><input type="radio" name="' + name + '" id="' + id + '" value="' + val + '"' + (checked ? " checked" : "") + '><label for="' + id + '">' + label + "</label></div>";
+    }
+  },
+
+  /* 3 ---- Vehicle ---- */
+  vehicle(){
+    const sel = S.app.data.vehicles;
+    const age = applicantAge();
+    const cards = VEHICLES.map(v => {
+      const allowed = vehicleAllowed(v.id, age);
+      const selCls = sel.includes(v.id) ? " selected" : "";
+      const dis = allowed ? "" : ' aria-disabled="true"';
+      const note = allowed ? "" : '<span class="sub" style="color:var(--amber);font-weight:700">Needs age ' + v.minAge + "; you are " + (age === null ? "unknown" : age) + "</span>";
+      return '<button type="button" class="choice' + selCls + '" data-action="toggle-vehicle" data-v="' + v.id + '"' + dis
+        + ' aria-pressed="' + sel.includes(v.id) + '">'
+        + '<span class="ic" aria-hidden="true">' + v.ic + "</span><b>" + v.title + '</b><span class="sub">' + v.sub + "</span>" + note
+        + '<span class="code">Licence category: ' + v.id + "</span></button>";
+    }).join("");
+    return stepHead("vehicle", "Choose in plain language. CivicFlow records the official licence categories for you.")
+      + '<div class="choice-grid" role="group" aria-label="Vehicle types">' + cards + "</div>"
+      + fieldError("vehicle-pick")
+      + '<div class="panel"><b>Your selection: </b>' + (sel.length ? sel.map(id => esc(VEHICLE_BY_ID[id].title) + " (" + id + ")").join(", ") : "nothing yet")
+      + '<br><span class="hint">You can pick more than one. You will confirm this again before payment, because the category decides what your licence allows.</span></div>'
+      + helpBox("vehicle")
+      + actionBar({ back:"#/apply/eligibility", nextAction:"finish-vehicle", nextLabel:"Save and continue to " + nextStepLabel("vehicle") });
+  },
+
+  /* 4 ---- Details ---- */
+  details(){
+    const d = S.app.data.details;
+    const age = applicantAge();
+    const minor = age !== null && age < 18;
+    return stepHead("details", "Only what this application needs. Use the exact name on your identity document.")
+      + '<form id="details-form" novalidate><div class="two-col">'
+      + '<div class="' + fieldCls("f-name") + '"><label for="f-name">Full name</label>'
+      + '<span class="hint">As printed on your ID.</span>'
+      + '<input type="text" id="f-name" value="' + esc(d.name) + '" autocomplete="name"' + ariaErr("f-name") + ">" + fieldError("f-name") + "</div>"
+      + '<div class="' + fieldCls("f-gender") + '"><label for="f-gender">Gender</label>'
+      + '<select id="f-gender"' + ariaErr("f-gender") + '><option value="">Choose</option>'
+      + ["Male","Female","Other","Prefer not to say"].map(g => '<option' + (d.gender === g ? " selected" : "") + ">" + g + "</option>").join("")
+      + "</select>" + fieldError("f-gender") + "</div>"
+      + '<div class="' + fieldCls("f-mobile") + '"><label for="f-mobile">Mobile number</label>'
+      + '<span class="hint">10 digits. Demo only, no SMS is sent.</span>'
+      + '<input type="tel" id="f-mobile" inputmode="numeric" maxlength="10" value="' + esc(d.mobile) + '" autocomplete="tel-national"' + ariaErr("f-mobile") + ">" + fieldError("f-mobile") + "</div>"
+      + '<div class="' + fieldCls("f-email") + '"><label for="f-email">Email (optional)</label>'
+      + '<input type="email" id="f-email" value="' + esc(d.email) + '" autocomplete="email"' + ariaErr("f-email") + ">" + fieldError("f-email") + "</div>"
+      + "</div>"
+      + (minor
+        ? '<fieldset><legend>Parent or guardian consent</legend>'
+          + '<span class="hint">Needed because you are under 18.</span>'
+          + '<div class="' + fieldCls("f-guardian") + '"><label for="f-guardian">Parent or guardian full name</label>'
+          + '<input type="text" id="f-guardian" value="' + esc(d.guardianName) + '"' + ariaErr("f-guardian") + ">" + fieldError("f-guardian") + "</div>"
+          + '<div class="check-row"><input type="checkbox" id="f-consent"' + (d.guardianConsent ? " checked" : "") + '><label for="f-consent">My parent or guardian consents to this application (demo)</label></div>' + fieldError("f-consent")
+          + "</fieldset>"
+        : "")
+      + helpBox("details")
+      + actionBar({ back:"#/apply/vehicle", nextAction:"finish-details", nextLabel: S.returnToReview ? "Save and return to Review" : "Save and continue to " + nextStepLabel("details") })
+      + "</form>";
+  },
+
+  /* 5 ---- Address & RTO ---- */
+  address(){
+    const a = S.app.data.address;
+    const rto = a.pin && !a.rtoManual ? rtoForPin(a.pin) : null;
+    let rtoBlock = "";
+    if (a.rtoManual) {
+      rtoBlock = '<div class="' + fieldCls("f-rto") + '"><label for="f-rto">Choose your RTO</label>'
+        + '<span class="hint">Pick the office responsible for your current residential address.</span>'
+        + '<select id="f-rto"' + ariaErr("f-rto") + '><option value="">Choose an RTO</option>'
+        + RTOS.map(r => '<option value="' + r.code + '"' + (a.rto === r.code ? " selected" : "") + ">" + r.code + " " + r.name + "</option>").join("")
+        + "</select>" + fieldError("f-rto") + "</div>";
+    } else if (rto) {
+      rtoBlock = '<div class="panel good"><h3>Your responsible RTO: ' + rto.code + " " + esc(rto.name) + "</h3>"
+        + "<p>Based on PIN code " + esc(a.pin) + ". This office will process your application and test."
+        + ' <button type="button" class="btn ghost" data-action="rto-manual" style="margin-top:8px">This looks wrong, choose manually</button></p></div>';
+    } else if (a.pin && a.pin.length === 6) {
+      rtoBlock = '<div class="panel warn"><h3>We could not match PIN ' + esc(a.pin) + " to an RTO</h3>"
+        + "<p>This happens when a village or new area is missing from the mapping. You do not need to visit an office. Try these, in order:</p><ul>"
+        + "<li>Check the PIN code for typos.</li>"
+        + "<li>Choose your RTO from the list yourself.</li>"
+        + "<li>Report the missing location so the mapping gets fixed.</li></ul>"
+        + '<div class="btn-row"><button type="button" class="btn secondary" data-action="rto-manual">Choose my RTO from a list</button>'
+        + '<button type="button" class="btn warn" data-action="report-missing"' + (a.reported ? ' aria-disabled="true"' : "") + ">"
+        + (a.reported ? "Reported, thank you" : "Report missing location (demo)") + "</button></div></div>"
+        + fieldError("f-rto");
+    } else {
+      rtoBlock = '<p class="hint">Enter your 6 digit PIN code and we will suggest the responsible RTO.</p>' + fieldError("f-rto");
+    }
+    return stepHead("address", "Your current residential address decides which RTO handles your application.")
+      + '<form id="address-form" novalidate>'
+      + '<div class="' + fieldCls("f-line") + '"><label for="f-line">Address</label>'
+      + '<span class="hint">House or flat, street, area. Where you live now, not a permanent address elsewhere.</span>'
+      + '<input type="text" id="f-line" value="' + esc(a.line) + '" autocomplete="street-address"' + ariaErr("f-line") + ">" + fieldError("f-line") + "</div>"
+      + '<div class="two-col">'
+      + '<div class="' + fieldCls("f-city") + '"><label for="f-city">City, town or village</label>'
+      + '<input type="text" id="f-city" value="' + esc(a.city) + '" autocomplete="address-level2"' + ariaErr("f-city") + ">" + fieldError("f-city") + "</div>"
+      + '<div class="' + fieldCls("f-district") + '"><label for="f-district">District</label>'
+      + '<select id="f-district"' + ariaErr("f-district") + '><option value="">Choose</option>'
+      + ["Bengaluru Urban","Bengaluru Rural"].map(x => "<option" + (a.district === x ? " selected" : "") + ">" + x + "</option>").join("")
+      + "</select>" + fieldError("f-district") + "</div>"
+      + '<div class="' + fieldCls("f-pin") + '"><label for="f-pin">PIN code</label>'
+      + '<input type="text" id="f-pin" inputmode="numeric" maxlength="6" value="' + esc(a.pin) + '" autocomplete="postal-code"' + ariaErr("f-pin") + ">" + fieldError("f-pin")
+      + '<div style="margin-top:8px"><button type="button" class="btn secondary" data-action="lookup-rto">Find my RTO from this PIN</button></div></div>'
+      + "</div>"
+      + rtoBlock
+      + helpBox("address")
+      + actionBar({ back:"#/apply/details", nextAction:"finish-address", nextLabel: S.returnToReview ? "Save and return to Review" : "Save and continue to " + nextStepLabel("address") })
+      + "</form>";
+  },
+
+  /* 6 ---- Identity ---- */
+  identity(){
+    const id = S.app.data.identity;
+    let body = "";
+    if (id.verified) {
+      body = '<div class="panel good"><h3>' + (id.method === "aadhaar" ? "Identity verified with demo eKYC" : "Identity route recorded") + "</h3>"
+        + "<p>" + (id.method === "aadhaar"
+            ? "The demo eKYC also provided a photo, so you will not be asked to upload one."
+            : "You chose the alternate route with: " + esc(id.altDoc) + ". You will upload it, plus a photo, on the Documents step.")
+        + "</p></div>"
+        + '<div class="btn-row"><button class="btn ghost" data-action="identity-restart">Change identity method</button></div>'
+        + actionBar({ back:"#/apply/address", nextAction:"finish-identity", nextLabel:"Continue to " + nextStepLabel("identity") });
+    } else if (id.method === "aadhaar") {
+      body = "<h2>Demo Aadhaar authentication</h2>"
+        + '<div class="demo-note"><b>Never enter a real Aadhaar number.</b> This prototype uses a fictional Virtual ID and a fictional OTP. Nothing is sent anywhere.</div>'
+        + '<div class="field"><label for="f-vid">Demo Virtual ID</label>'
+        + '<span class="hint">Prefilled with a fictional value. In the live service you would enter your own Aadhaar number or Virtual ID.</span>'
+        + '<input type="text" id="f-vid" value="9999 8888 7777 0000" readonly></div>'
+        + '<fieldset><legend>Consent (plain language)</legend>'
+        + '<div class="check-row"><input type="checkbox" id="c-ekyc"' + (id.otpSent ? " checked disabled" : "") + '><label for="c-ekyc">I agree that my identity is checked with the demo eKYC service, which returns my name, date of birth, photo and address to prefill this application.</label></div>'
+        + fieldError("c-ekyc")
+        + "</fieldset>"
+        + (id.otpSent
+          ? '<div class="panel"><h3>Enter the demo OTP</h3><p>A real service would send this to your Aadhaar linked mobile. Here it is on screen:</p>'
+            + '<p><span class="otp-box">' + DEMO_OTP + "</span></p>"
+            + '<div class="' + fieldCls("f-otp") + '" style="margin-top:10px"><label for="f-otp">Demo OTP</label>'
+            + '<input type="text" id="f-otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code"' + ariaErr("f-otp") + ">" + fieldError("f-otp") + "</div>"
+            + '<div class="btn-row"><button class="btn primary" data-action="verify-otp">Verify and continue</button>'
+            + '<button class="btn ghost" data-action="identity-restart">Use a different method</button></div></div>'
+          : '<div class="btn-row"><button class="btn primary" data-action="send-otp">Send demo OTP</button>'
+            + '<button class="btn ghost" data-action="identity-restart">Back to identity choices</button></div>')
+        + actionBar({ back:"#/apply/address" });
+    } else if (id.method === "alternate") {
+      body = "<h2>Alternate identity route</h2>"
+        + "<p>For people who cannot or prefer not to use Aadhaar authentication. Choose the document you will provide; you upload it on the next step.</p>"
+        + '<div class="' + fieldCls("f-altdoc") + '"><label for="f-altdoc">Identity document</label>'
+        + '<select id="f-altdoc"' + ariaErr("f-altdoc") + '><option value="">Choose a document</option>'
+        + ["Passport","Voter ID card","PAN card with birth certificate"].map(x => "<option" + (id.altDoc === x ? " selected" : "") + ">" + x + "</option>").join("")
+        + "</select>" + fieldError("f-altdoc") + "</div>"
+        + '<div class="btn-row"><button class="btn primary" data-action="confirm-alt">Use this document</button>'
+        + '<button class="btn ghost" data-action="identity-restart">Back to identity choices</button></div>'
+        + actionBar({ back:"#/apply/address" });
+    } else {
+      body = '<div class="choice-grid">'
+        + '<button type="button" class="choice" data-action="pick-identity" data-m="aadhaar"><span class="ic" aria-hidden="true">✅</span><b>Aadhaar authentication (demo)</b><span class="sub">Fastest. A one time password goes to your Aadhaar linked mobile, and your photo comes from eKYC so you upload less.</span></button>'
+        + '<button type="button" class="choice" data-action="pick-identity" data-m="alternate"><span class="ic" aria-hidden="true">🪪</span><b>Another identity document</b><span class="sub">Use a passport or voter ID instead. You will upload it, plus a photo, on the Documents step.</span></button>'
+        + "</div>"
+        + fieldError("identity-pick")
+        + '<div class="panel"><h3>Why we verify identity</h3><p>A licence is a legal document, so the transport department must confirm who you are. You choose how.</p></div>'
+        + '<div class="demo-note">This prototype never contacts Aadhaar or UIDAI and never asks for a real Aadhaar number.</div>'
+        + actionBar({ back:"#/apply/address" });
+    }
+    return stepHead("identity", "Choose how to prove who you are. The demo never uses real identity data.") + body + helpBox("identity");
+  },
+
+  /* 7 ---- Documents ---- */
+  documents(){
+    const idd = S.app.data.identity;
+    const docs = requiredDocs();
+    const ups = S.app.data.documents.uploads;
+    const ekycNote = idd.method === "aadhaar" && idd.verified
+      ? '<div class="panel good"><h3>No photo needed</h3><p>Your photo already came from demo eKYC, so there is nothing to upload for it. Only your signature is needed.</p></div>'
+      : "";
+    const blocks = docs.map(doc => {
+      const up = ups[doc.id];
+      const done = up ? '<p><b>✓ ' + esc(up.name) + "</b> (" + up.sizeKB + ' KB) accepted.</p>' : "";
+      return '<div class="upload' + (up ? " okd" : "") + '"><h3 style="margin-top:0">' + esc(doc.label) + "</h3>"
+        + '<p class="req">' + esc(doc.req) + "</p>" + done
+        + '<div class="btn-row" style="margin:0">'
+        + '<label class="btn secondary" style="cursor:pointer">' + (up ? "Replace file" : "Choose file")
+        + '<input type="file" class="sr-only" data-doc="' + doc.id + '" accept="' + doc.accept + '"></label>'
+        + '<button type="button" class="btn ghost" data-action="demo-file" data-doc="' + doc.id + '">Use a demo file</button>'
+        + "</div>" + fieldError("doc-" + doc.id) + "</div>";
+    }).join("");
+    return stepHead("documents", "Generated from your earlier answers. Requirements sit next to each upload, and valid uploads are kept if something else fails.")
+      + ekycNote + blocks
+      + '<div class="demo-note">Files never leave this browser. Only the file name and size are kept, in memory of this demo.</div>'
+      + helpBox("documents")
+      + actionBar({ back:"#/apply/identity", nextAction:"finish-documents", nextLabel: S.returnToReview ? "Save and return to Review" : "Save and continue to " + nextStepLabel("documents") });
+  },
+
+  /* 8 ---- Review ---- */
+  review(){
+    const d = S.app.data;
+    const rv = d.review;
+    const row = (k, v, step) => '<div class="srow"><span class="skey">' + k + "</span><span>" + v + '</span><a class="schange" href="#/apply/' + step + '" data-action="edit-from-review" data-step="' + step + '">Change<span class="sr-only"> ' + k + "</span></a></div>";
+    const fee = feeBreakdown(d.vehicles);
+    return stepHead("review", "The last cheap moment to fix anything. After payment, corrections can require an RTO visit.")
+      + '<div class="summary">'
+      + row("Name", esc(d.details.name), "details")
+      + row("Date of birth", esc(d.eligibility.dob), "eligibility")
+      + row("Gender", esc(d.details.gender), "details")
+      + row("Mobile", esc(d.details.mobile), "details")
+      + row("Address", esc(d.address.line + ", " + d.address.city + " " + d.address.pin), "address")
+      + row("Responsible RTO", esc(rtoLabel(d.address.rto)), "address")
+      + row("Identity route", d.identity.method === "aadhaar" ? "Aadhaar eKYC (demo), verified" : "Alternate: " + esc(d.identity.altDoc), "identity")
+      + row("Documents", Object.keys(d.documents.uploads).length + " file(s) provided", "documents")
+      + "</div>"
+      + '<div class="panel warn"><h3>High impact: confirm your vehicle categories</h3>'
+      + "<p>Your licence will cover exactly: <b>" + d.vehicles.map(id => esc(VEHICLE_BY_ID[id].title) + " (" + id + ")").join(", ") + "</b>. A wrong category here means a wrong licence later.</p>"
+      + '<div class="check-row"><input type="checkbox" id="rv-vehicles"' + (rv.confirmedVehicles ? " checked" : "") + '><label for="rv-vehicles">Yes, these are the vehicles I want to learn</label></div>' + fieldError("rv-vehicles")
+      + '<p><a href="#/apply/vehicle" data-action="edit-from-review" data-step="vehicle">Change vehicle selection</a></p></div>'
+      + "<h2>Fee to pay</h2><table class=\"fees\"><tbody>"
+      + fee.rows.map(r => "<tr><td>" + esc(r.label) + "</td><td>₹" + r.amount + "</td></tr>").join("")
+      + '</tbody><tfoot><tr><td>Total</td><td>₹' + fee.total + "</td></tr></tfoot></table>"
+      + '<div class="check-row"><input type="checkbox" id="rv-declare"' + (rv.declared ? " checked" : "") + '><label for="rv-declare">The information above is true to the best of my knowledge (demo declaration)</label></div>' + fieldError("rv-declare")
+      + helpBox("review")
+      + actionBar({ back:"#/apply/documents", nextAction:"finish-review", nextLabel:"Confirm and continue to Payment" });
+  },
+
+  /* 9 ---- Payment ---- */
+  payment(){
+    const p = S.app.data.payment;
+    const fee = feeBreakdown(S.app.data.vehicles);
+    let body = "";
+    if (p.status === "received") {
+      body = '<div class="bigresult pass"><div class="big" aria-hidden="true">✓</div><h2 style="margin:6px 0">Payment received</h2>'
+        + "<p>Application <b>" + esc(S.app.number) + "</b> · Amount <b>₹" + fee.total + "</b> · Transaction <b>" + esc(p.txn) + "</b></p>"
+        + "<p><b>What happens next:</b> get your device ready, practise, then take the test.</p></div>"
+        + actionBar({ back:"#/dashboard", nextAction:"goto-readiness", nextLabel:"Continue to " + nextStepLabel("payment") });
+    } else if (p.status === "uncertain") {
+      body = '<div class="panel warn"><h3>Your payment is unconfirmed. Don\'t pay again yet.</h3>'
+        + "<p>Your bank may have completed the payment while this application was still updating. Paying again now is how duplicate payments happen.</p>"
+        + "<p>Reference: <b>" + esc(p.txn) + "</b>. Check the status first; it asks the payment provider directly.</p></div>"
+        + '<div class="btn-row"><button class="btn primary" data-action="check-payment">Check payment status</button>'
+        + '<a class="btn ghost" href="#/dashboard">I\'ll come back later, keep my application</a></div>'
+        + '<p class="hint">If the check finds no payment, you will be offered a fresh attempt. Nothing about your application is lost either way.</p>'
+        + actionBar({ back:"#/dashboard" });
+    } else if (p.status === "checking") {
+      body = '<div class="panel"><h3>Checking with the payment provider...</h3><p>This usually takes a few seconds.</p></div>';
+    } else if (p.status === "processing") {
+      body = '<div class="panel"><h3>Sending you to the demo payment provider...</h3><p>Do not refresh or press back while this completes.</p></div>';
+    } else {
+      body = '<table class="fees"><caption class="sr-only">Fee breakdown</caption><tbody>'
+        + fee.rows.map(r => "<tr><td>" + esc(r.label) + "</td><td>₹" + r.amount + "</td></tr>").join("")
+        + '</tbody><tfoot><tr><td>Total due</td><td>₹' + fee.total + "</td></tr></tfoot></table>"
+        + '<div class="demo-note"><b>Demo payment.</b> No money moves and no card or bank details are ever asked for. Choose how the pretend payment should end, to see both journeys:</div>'
+        + '<fieldset><legend>Demo outcome</legend>'
+        + '<div class="radio-row"><input type="radio" name="pay-outcome" id="po-s" value="success"' + (p.outcome !== "uncertain" ? " checked" : "") + '><label for="po-s">Payment succeeds normally</label></div>'
+        + '<div class="radio-row"><input type="radio" name="pay-outcome" id="po-u" value="uncertain"' + (p.outcome === "uncertain" ? " checked" : "") + '><label for="po-u">Bank succeeds but the application does not hear back (the scary one)</label></div>'
+        + "</fieldset>"
+        + '<div class="btn-row"><button class="btn primary" data-action="pay-now">Pay ₹' + fee.total + " (demo)</button></div>"
+        + actionBar({ back:"#/apply/review" });
+    }
+    return stepHead("payment", "Three honest states: ready to pay, payment received, or payment uncertain, each with a clear way forward.") + body + helpBox("payment");
+  },
+
+  /* 10 ---- Test readiness ---- */
+  readiness(){
+    const r = S.app.data.readiness;
+    const CHECKS = readinessChecks();
+    let grid = "";
+    if (r.results) {
+      grid = '<div class="checks">' + CHECKS.map((c, i) => {
+        const res = r.results[i];
+        const cls = res === "ok" ? "ok" : res === "bad" ? "bad" : "";
+        const word = res === "ok" ? "✓ Passed" : res === "bad" ? "✗ Needs attention" : "○ Waiting";
+        return '<div class="checkitem ' + cls + '"><b>' + c.label + '</b><div class="cstat">' + word + "</div>"
+          + (res === "bad" ? '<p style="margin:8px 0 0">' + c.fix + "</p>" : "")
+          + "</div>";
+      }).join("") + "</div>";
+    }
+    const anyBad = r.results && r.results.includes("bad");
+    return stepHead("readiness", "Find device problems now, in a safe place, not while the test timer runs.")
+      + '<p>The online test uses your camera and microphone. This simulated check covers all six requirements. It never restarts your application; a failed check just re-runs.</p>'
+      + '<div class="check-row"><input type="checkbox" id="rd-faildemo"' + (r.failDemo ? " checked" : "") + '><label for="rd-faildemo">Demo control: make the lighting check fail, to see the recovery path</label></div>'
+      + grid
+      + (anyBad
+        ? '<div class="panel warn"><h3>One check needs attention</h3><p>Follow the fix above, then re-run only the failed check. Everything that passed stays passed.</p></div>'
+          + '<div class="btn-row"><button class="btn primary" data-action="rerun-failed">Fix done, re-run the failed check</button></div>'
+        : "")
+      + (r.done && !anyBad
+        ? '<div class="panel good"><h3>Your device is ready</h3><p>All six checks passed. You can go straight to the practice test.</p></div>'
+        : (!anyBad ? '<div class="btn-row"><button class="btn primary" data-action="run-checks">' + (r.results ? "Run the checks again" : "Run the 30 second device check") + "</button></div>" : ""))
+      + helpBox("readiness")
+      + actionBar({ back:"#/apply/payment", nextAction:"finish-readiness",
+          nextLabel: r.done && !anyBad ? "Continue to " + nextStepLabel("readiness") : null,
+          nextRaw: r.done && !anyBad ? null : '<span class="hint" style="align-self:center">Pass all checks to continue</span>' });
+  },
+
+  /* 11 ---- Practice ---- */
+  practice(){
+    const pr = S.app.data.practice;
+    if (pr.finished) {
+      return stepHead("practice", "Practice complete. This score is never recorded anywhere.")
+        + '<div class="bigresult pass"><div class="big" aria-hidden="true">🎓</div><h2 style="margin:6px 0">You scored ' + pr.score + " out of " + PRACTICE_QS.length + "</h2>"
+        + "<p>" + (pr.score >= 4 ? "You look ready for the real thing." : "Worth one more round? You can retake this as often as you like.") + "</p></div>"
+        + '<div class="btn-row"><button class="btn secondary" data-action="practice-again">Take the practice test again</button></div>'
+        + helpBox("practice")
+        + actionBar({ back:"#/apply/readiness", nextAction:"finish-practice", nextLabel:"I'm ready, continue to the real test" });
+    }
+    const q = PRACTICE_QS[pr.idx];
+    const answered = pr.picked !== null;
+    return stepHead("practice", "Five sample questions in the same format as the real test. Instant feedback, zero stakes.")
+      + '<p><b>Question ' + (pr.idx + 1) + " of " + PRACTICE_QS.length + "</b> · Score so far: " + pr.score + "</p>"
+      + '<div class="q-card"><p class="q-text">' + esc(q.q) + '</p><div class="ans">'
+      + q.a.map((a, i) => {
+          let cls = "choice", mark = "";
+          if (answered) {
+            if (i === q.c) { cls += " selected"; mark = " ✓ correct"; }
+            else if (i === pr.picked) { mark = " ✗ your answer"; }
+          }
+          return '<button type="button" class="' + cls + '" data-action="practice-pick" data-i="' + i + '"' + (answered ? ' aria-disabled="true"' : "") + ">"
+            + String.fromCharCode(65 + i) + ". " + esc(a) + "<b>" + mark + "</b></button>";
+        }).join("")
+      + "</div>"
+      + (answered
+        ? '<div class="panel ' + (pr.picked === q.c ? "good" : "warn") + '"><p><b>' + (pr.picked === q.c ? "Correct." : "Not quite.") + "</b> " + esc(q.why) + "</p></div>"
+          + '<div class="btn-row"><button class="btn primary" data-action="practice-next">' + (pr.idx + 1 >= PRACTICE_QS.length ? "See my practice result" : "Next question") + "</button></div>"
+        : "")
+      + "</div>"
+      + helpBox("practice")
+      + actionBar({ back:"#/apply/readiness" });
+  },
+
+  /* 12 ---- The real test ---- */
+  test(){
+    const t = S.app.data.test;
+    if (t.submitted && t.score !== null) {
+      const passed = t.score >= PASS_MARK;
+      if (passed) {
+        return stepHead("test", "Test complete.")
+          + '<div class="bigresult pass"><div class="big" aria-hidden="true">🎉</div><h2 style="margin:6px 0">You passed: ' + t.score + " out of " + TEST_QS.length + "</h2>"
+          + "<p>Attempt " + t.attempt + ". Your learner's licence is ready to view and download.</p></div>"
+          + helpBox("test")
+          + actionBar({ back:"#/dashboard", nextAction:"goto-licence", nextLabel:"View and download my licence" });
+      }
+      const slot = t.retestSlot || nextSlotLabel();
+      return stepHead("test", "Not this time, and that is okay. Recovery happens right here, not in a distant menu.")
+        + '<div class="bigresult fail"><div class="big" aria-hidden="true">↻</div><h2 style="margin:6px 0">You scored ' + t.score + " out of " + TEST_QS.length + " (needed " + PASS_MARK + ")</h2>"
+        + "<p>Attempt " + t.attempt + ". Your application, payment and documents are all safe.</p></div>"
+        + (t.retestPaid
+          ? '<div class="panel good"><h3>Retest booked</h3><p>Fee paid (₹' + CONFIG.retestFee + ") and your slot is <b>" + esc(slot) + "</b>. In this demo you can start it now.</p></div>"
+            + '<div class="btn-row"><button class="btn primary" data-action="start-retest">Start my retest now (demo)</button></div>'
+          : '<div class="panel warn"><h3>Book your retest, one action, one place</h3>'
+            + "<p>The live system exposes retest fees and booking as separate services. Here they are together:</p>"
+            + "<ul><li>Retest fee: <b>₹" + CONFIG.retestFee + "</b> (demo)</li><li>Next available slot: <b>" + esc(slot) + "</b></li></ul>"
+            + '<div class="btn-row" style="margin-bottom:0"><button class="btn primary" data-action="pay-retest">Pay retest fee and book this slot (demo)</button></div></div>')
+        + helpBox("test")
+        + actionBar({ back:"#/dashboard" });
+    }
+    const qi = t.idx;
+    const q = TEST_QS[qi];
+    const answeredCount = Object.keys(t.answers).length;
+    return stepHead("test", "Ten questions, " + PASS_MARK + " needed to pass. Take your time; there is no penalty for changing an answer before you finish.")
+      + '<div class="palette" role="group" aria-label="Question palette">'
+      + TEST_QS.map((_, i) => '<button type="button" class="pal' + (i === qi ? " now" : "") + (t.answers[i] !== undefined ? " answered" : "") + '" data-action="test-goto" data-i="' + i + '" aria-label="Question ' + (i+1) + (t.answers[i] !== undefined ? ", answered" : ", not answered") + '">' + (i+1) + "</button>").join("")
+      + "</div>"
+      + '<div class="q-card"><p class="q-text">Question ' + (qi+1) + " of " + TEST_QS.length + ": " + esc(q.q) + '</p><div class="ans">'
+      + q.a.map((a, i) => '<button type="button" class="choice' + (t.answers[qi] === i ? " selected" : "") + '" data-action="test-pick" data-i="' + i + '" aria-pressed="' + (t.answers[qi] === i) + '">' + String.fromCharCode(65+i) + ". " + esc(a) + "</button>").join("")
+      + "</div></div>"
+      + '<div class="btn-row">'
+      + (qi > 0 ? '<button class="btn secondary" data-action="test-goto" data-i="' + (qi-1) + '">Previous question</button>' : "")
+      + (qi + 1 < TEST_QS.length ? '<button class="btn secondary" data-action="test-goto" data-i="' + (qi+1) + '">Next question</button>' : "")
+      + '<button class="btn primary" data-action="test-submit">Finish and submit my answers (' + answeredCount + "/" + TEST_QS.length + " answered)</button>"
+      + "</div>" + fieldError("test-incomplete")
+      + helpBox("test")
+      + actionBar({ back:"#/dashboard" });
+  },
+
+  /* 13 ---- Licence ---- */
+  licence(){
+    const d = S.app.data;
+    const issued = new Date();
+    const until = new Date(issued); until.setMonth(until.getMonth() + CONFIG.licenceValidityMonths);
+    const fmt = dt => dt.toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" });
+    return stepHead("licence", "You passed. The licence itself is the dominant action here, nothing else competes with it.")
+      + '<div class="ll-card" id="ll-card"><div class="ll-head"><b>LEARNER\'S LICENCE · ' + CONFIG.state.toUpperCase() + "</b><small>Digital demo document · Not valid for driving</small></div>"
+      + '<div class="ll-body"><div>'
+      + lrow("Licence number", esc(S.app.number || APP_NUMBER))
+      + lrow("Name", esc(d.details.name))
+      + lrow("Date of birth", esc(d.eligibility.dob))
+      + lrow("Categories", d.vehicles.map(id => id + " (" + esc(VEHICLE_BY_ID[id].title) + ")").join(", "))
+      + lrow("Issued by", rtoLabel(d.address.rto) + " · demo")
+      + lrow("Valid", fmt(issued) + " to " + fmt(until))
+      + '</div><div class="ll-photo">PHOTO<br>(from demo eKYC)</div></div></div>'
+      + '<div class="btn-row"><button class="btn primary" data-action="download-licence">Download learner licence (demo file)</button>'
+      + '<button class="btn secondary" data-action="print-licence">Print this page</button>'
+      + '<a class="btn ghost" href="#/dashboard">Back to dashboard</a></div>'
+      + '<div class="panel"><h3>What happens next</h3><p>Practise with your L plate and a supervisor as the rules require, then apply for the driving test once you are eligible. In the live service that journey would start from this screen too.</p></div>'
+      + helpBox("licence");
+    function lrow(k, v){ return '<div class="lrow"><span class="lk">' + k + "</span><b>" + v + "</b></div>"; }
+  }
+};
+
+function requiredDocs(){
+  const idd = S.app.data.identity;
+  const docs = [];
+  if (!(idd.method === "aadhaar" && idd.verified)) {
+    docs.push({ id:"photo", label:"Passport style photo", req:"JPG or PNG, up to 500 KB, plain background, face clearly visible.", accept:"image/*" });
+    docs.push({ id:"iddoc", label:(idd.altDoc || "Identity document"), req:"PDF or JPG of the full document, up to 2 MB.", accept:".pdf,image/*" });
+    docs.push({ id:"addr", label:"Address proof", req:"PDF or JPG, up to 2 MB. Must show the address you entered.", accept:".pdf,image/*" });
+  }
+  docs.push({ id:"sign", label:"Signature", req:"JPG or PNG, up to 200 KB, dark ink on white paper.", accept:"image/*" });
+  return docs;
+}
+function readinessChecks(){
+  return [
+    { label:"Camera", fix:"Click the camera icon in the address bar and choose Allow. If there is no camera, use another device or book an RTO kiosk slot." },
+    { label:"Microphone", fix:"Allow microphone access in the address bar, and check nothing else is using it." },
+    { label:"Browser", fix:"Update to a recent version of Chrome, Edge, Firefox or Safari." },
+    { label:"Internet connection", fix:"Move closer to your router or switch to mobile data. The test needs a steady, not fast, connection." },
+    { label:"Face visibility", fix:"Sit so your whole face is inside the frame, and remove sunglasses or a cap." },
+    { label:"Lighting", fix:"Face a window or lamp so light falls on your face, not behind you. A desk lamp beside the screen works well." }
+  ];
+}
+function nextSlotLabel(){
+  const d = new Date(); d.setDate(d.getDate() + 1);
+  return d.toLocaleDateString("en-IN", { weekday:"long", day:"numeric", month:"short" }) + ", 10:30 am";
+}
+
+/* ============ VALIDATION + STEP COMPLETION ============ */
+function val(id){ const el = document.getElementById(id); return el ? el.value.trim() : ""; }
+function checked(id){ const el = document.getElementById(id); return !!(el && el.checked); }
+
+function finishEligibility(){
+  const e = S.app.data.eligibility;
+  const pick = document.querySelector('input[name="elig-existing"]:checked');
+  e.existing = pick ? pick.value : e.existing;
+  e.dob = val("elig-dob") || e.dob;
+  e.proceedAnyway = checked("elig-anyway") || e.proceedAnyway;
+  S.errors = [];
+  if (!e.existing) S.errors.push({ id:"elig-existing-none", msg:"Tell us whether you already hold a licence" });
+  if (e.existing && e.existing !== "none" && !e.proceedAnyway) S.errors.push({ id:"elig-anyway", msg:"Tick the box to continue with a first time application in this demo" });
+  if (!e.dob) S.errors.push({ id:"elig-dob", msg:"Enter your date of birth" });
+  else {
+    const age = ageOn(e.dob);
+    if (age === null) S.errors.push({ id:"elig-dob", msg:"Enter a valid date of birth" });
+    else if (age < 16) S.errors.push({ id:"elig-dob", msg:"The minimum age is 16, so this application cannot continue yet" });
+    else if (age > 100) S.errors.push({ id:"elig-dob", msg:"Check the date of birth, that age looks wrong" });
+  }
+  save();
+  if (S.errors.length) { render(); return; }
+  markDone("eligibility");
+  afterSectionSave("vehicle");
+}
+function finishDetails(){
+  const d = S.app.data.details;
+  d.name = val("f-name"); d.gender = val("f-gender"); d.mobile = val("f-mobile"); d.email = val("f-email");
+  const minor = applicantAge() !== null && applicantAge() < 18;
+  if (minor) { d.guardianName = val("f-guardian"); d.guardianConsent = checked("f-consent"); }
+  S.errors = [];
+  if (!d.name || d.name.length < 3) S.errors.push({ id:"f-name", msg:"Enter your full name as printed on your ID" });
+  if (!d.gender) S.errors.push({ id:"f-gender", msg:"Choose a gender option" });
+  if (!/^[6-9]\d{9}$/.test(d.mobile)) S.errors.push({ id:"f-mobile", msg:"Enter a 10 digit mobile number starting 6 to 9" });
+  if (d.email && !/^\S+@\S+\.\S+$/.test(d.email)) S.errors.push({ id:"f-email", msg:"Enter a valid email address, or leave it empty" });
+  if (minor && !d.guardianName) S.errors.push({ id:"f-guardian", msg:"Enter your parent or guardian's name" });
+  if (minor && !d.guardianConsent) S.errors.push({ id:"f-consent", msg:"Confirm your parent or guardian consents" });
+  save();
+  if (S.errors.length) { render(); return; }
+  markDone("details");
+  afterSectionSave("address");
+}
+function saveAddressFields(){
+  const a = S.app.data.address;
+  a.line = val("f-line"); a.city = val("f-city"); a.district = val("f-district"); a.pin = val("f-pin");
+  if (a.rtoManual) { const r = val("f-rto"); if (r) a.rto = r; }
+}
+function finishAddress(){
+  const a = S.app.data.address;
+  saveAddressFields();
+  if (!a.rtoManual) { const r = rtoForPin(a.pin); a.rto = r ? r.code : ""; }
+  S.errors = [];
+  if (!a.line) S.errors.push({ id:"f-line", msg:"Enter your address" });
+  if (!a.city) S.errors.push({ id:"f-city", msg:"Enter your city, town or village" });
+  if (!a.district) S.errors.push({ id:"f-district", msg:"Choose your district" });
+  if (!/^\d{6}$/.test(a.pin)) S.errors.push({ id:"f-pin", msg:"Enter a 6 digit PIN code" });
+  if (!a.rto) S.errors.push({ id:"f-rto", msg:"We need your responsible RTO: use Find my RTO, or choose one from the list" });
+  save();
+  if (S.errors.length) { render(); return; }
+  markDone("address");
+  afterSectionSave("identity");
+}
+function finishDocuments(){
+  const ups = S.app.data.documents.uploads;
+  S.errors = [];
+  requiredDocs().forEach(doc => { if (!ups[doc.id]) S.errors.push({ id:"doc-" + doc.id, msg:"Provide the " + doc.label.toLowerCase() + " (a demo file is fine)" }); });
+  save();
+  if (S.errors.length) { render(); return; }
+  markDone("documents");
+  afterSectionSave("review");
+}
+function afterSectionSave(nextId){
+  if (S.returnToReview && S.app.steps.review !== "done") {
+    S.returnToReview = false;
+    go("#/apply/review");
+  } else {
+    S.returnToReview = false;
+    go("#/apply/" + nextId);
+  }
+}
+
+/* ============ ACTIONS ============ */
+const ACTIONS = {
+  "font-up"(){ S.fontScale = Math.min(2, +(S.fontScale + 0.125).toFixed(3)); save(); render(); },
+  "font-down"(){ S.fontScale = Math.max(0.875, +(S.fontScale - 0.125).toFixed(3)); save(); render(); },
+  "font-reset"(){ S.fontScale = 1; save(); render(); },
+  "signout"(){ S.user = null; save(); go("#/"); render(); },
+  "start-new"(){ if (!S.app) S.app = blankApplication(); save(); go("#/apply/start"); },
+  "reset-app"(){
+    if (confirm("Delete the demo application saved in this browser?")) {
+      S.app = null; save(); go("#/"); render();
+    }
+  },
+  "finish-start"(){ markDone("start"); go("#/apply/eligibility"); },
+  "finish-eligibility"(){ finishEligibility(); },
+  "toggle-vehicle"(el){
+    if (el.getAttribute("aria-disabled") === "true") return;
+    const v = el.dataset.v;
+    const list = S.app.data.vehicles;
+    S.app.data.vehicles = list.includes(v) ? list.filter(x => x !== v) : list.concat(v);
+    if (S.app.steps.review === "done") S.app.data.review.confirmedVehicles = false;
+    save(); render();
+  },
+  "finish-vehicle"(){
+    S.errors = [];
+    if (!S.app.data.vehicles.length) S.errors.push({ id:"vehicle-pick", msg:"Choose at least one vehicle type" });
+    if (S.errors.length) { render(); return; }
+    markDone("vehicle");
+    afterSectionSave("details");
+  },
+  "finish-details"(){ finishDetails(); },
+  "lookup-rto"(){ saveAddressFields(); S.app.data.address.rtoManual = false; S.errors = []; save(); render(); },
+  "rto-manual"(){ saveAddressFields(); S.app.data.address.rtoManual = true; save(); render(); },
+  "report-missing"(el){
+    if (el.getAttribute("aria-disabled") === "true") return;
+    saveAddressFields(); S.app.data.address.reported = true; save(); render();
+    announce("Missing location reported. Thank you. In the live service this would file a mapping correction.");
+  },
+  "finish-address"(){ finishAddress(); },
+  "pick-identity"(el){
+    S.app.data.identity.method = el.dataset.m;
+    S.app.data.identity.otpSent = false; S.app.data.identity.verified = false;
+    save(); render();
+  },
+  "identity-restart"(){
+    S.app.data.identity = { method:null, otpSent:false, verified:false, altDoc:"" };
+    delete S.app.steps.identity;
+    save(); render();
+  },
+  "send-otp"(){
+    S.errors = [];
+    if (!checked("c-ekyc")) { S.errors.push({ id:"c-ekyc", msg:"Tick the consent box before sending the demo OTP" }); render(); return; }
+    S.app.data.identity.otpSent = true; save(); render();
+    announce("Demo OTP shown on screen: " + DEMO_OTP);
+  },
+  "verify-otp"(){
+    S.errors = [];
+    if (val("f-otp") !== DEMO_OTP) { S.errors.push({ id:"f-otp", msg:"Enter the demo OTP shown above (" + DEMO_OTP + ")" }); render(); return; }
+    const idd = S.app.data.identity;
+    idd.verified = true;
+    /* eKYC prefills details from the demo identity, like the real flow would */
+    const det = S.app.data.details;
+    if (!det.name) det.name = DEMO_SEED.name;
+    markDone("identity"); save(); render();
+  },
+  "confirm-alt"(){
+    S.errors = [];
+    const doc = val("f-altdoc");
+    if (!doc) { S.errors.push({ id:"f-altdoc", msg:"Choose which identity document you will provide" }); render(); return; }
+    const idd = S.app.data.identity;
+    idd.altDoc = doc; idd.verified = true;
+    markDone("identity"); save(); render();
+  },
+  "finish-identity"(){ afterSectionSave("documents"); },
+  "demo-file"(el){
+    const id = el.dataset.doc;
+    const names = { photo:"aarav-photo.jpg", iddoc:"identity-document.pdf", addr:"address-proof.pdf", sign:"aarav-signature.png" };
+    S.app.data.documents.uploads[id] = { name: names[id] || "demo-file.pdf", sizeKB: 180 };
+    S.errors = S.errors.filter(e => e.id !== "doc-" + id);
+    save(); render();
+  },
+  "finish-documents"(){ finishDocuments(); },
+  "edit-from-review"(){ S.returnToReview = true; /* href handles navigation */ },
+  "finish-review"(){
+    const rv = S.app.data.review;
+    rv.confirmedVehicles = checked("rv-vehicles");
+    rv.declared = checked("rv-declare");
+    S.errors = [];
+    if (!rv.confirmedVehicles) S.errors.push({ id:"rv-vehicles", msg:"Confirm your vehicle categories, this choice shapes your licence" });
+    if (!rv.declared) S.errors.push({ id:"rv-declare", msg:"Tick the declaration to continue" });
+    save();
+    if (S.errors.length) { render(); return; }
+    markDone("review");
+    go("#/apply/payment");
+  },
+  "pay-now"(){
+    const p = S.app.data.payment;
+    const pick = document.querySelector('input[name="pay-outcome"]:checked');
+    p.outcome = pick ? pick.value : "success";
+    p.status = "processing"; save(); render();
+    setTimeout(() => {
+      if (p.outcome === "uncertain") {
+        p.status = "uncertain"; p.txn = "DEMO-PEND-4471";
+        S.app.steps.payment = "action";
+      } else {
+        receivePayment();
+      }
+      save(); render();
+    }, 1200);
+  },
+  "check-payment"(){
+    const p = S.app.data.payment;
+    p.status = "checking"; save(); render();
+    setTimeout(() => {
+      receivePayment();
+      save(); render();
+      announce("Good news. The payment provider confirmed your payment. You did not need to pay twice.");
+    }, 1400);
+  },
+  "goto-readiness"(){ go("#/apply/readiness"); },
+  "run-checks"(){
+    const r = S.app.data.readiness;
+    r.failDemo = checked("rd-faildemo");
+    r.results = readinessChecks().map(() => "wait");
+    r.done = false; save(); render();
+    r.results.forEach((_, i) => {
+      setTimeout(() => {
+        r.results[i] = (r.failDemo && i === 5) ? "bad" : "ok";
+        if (i === r.results.length - 1) { r.done = !r.results.includes("bad"); }
+        save(); render();
+      }, 350 * (i + 1));
+    });
+  },
+  "rerun-failed"(){
+    const r = S.app.data.readiness;
+    r.failDemo = false;
+    const idx = r.results.indexOf("bad");
+    if (idx >= 0) r.results[idx] = "wait";
+    save(); render();
+    setTimeout(() => {
+      if (idx >= 0) r.results[idx] = "ok";
+      r.done = !r.results.includes("bad");
+      save(); render();
+      announce("The failed check now passes. Everything else was kept.");
+    }, 700);
+  },
+  "finish-readiness"(){
+    if (!S.app.data.readiness.done) return;
+    markDone("readiness"); go("#/apply/practice");
+  },
+  "practice-pick"(el){
+    const pr = S.app.data.practice;
+    if (pr.picked !== null) return;
+    pr.picked = +el.dataset.i;
+    if (pr.picked === PRACTICE_QS[pr.idx].c) pr.score++;
+    pr.answered++;
+    save(); render();
+  },
+  "practice-next"(){
+    const pr = S.app.data.practice;
+    pr.idx++; pr.picked = null;
+    if (pr.idx >= PRACTICE_QS.length) pr.finished = true;
+    save(); render();
+  },
+  "practice-again"(){
+    S.app.data.practice = { idx:0, picked:null, score:0, answered:0, finished:false };
+    save(); render();
+  },
+  "finish-practice"(){ markDone("practice"); go("#/apply/test"); },
+  "test-pick"(el){
+    const t = S.app.data.test;
+    t.answers[t.idx] = +el.dataset.i;
+    save(); render();
+  },
+  "test-goto"(el){ S.app.data.test.idx = +el.dataset.i; save(); render(); },
+  "test-submit"(){
+    const t = S.app.data.test;
+    const unanswered = TEST_QS.length - Object.keys(t.answers).length;
+    if (unanswered > 0) {
+      S.errors = [{ id:"test-incomplete", msg: unanswered + " question(s) still unanswered. Use the numbered palette to reach them, or submit anyway by pressing the button again." }];
+      if (!t.warned) { t.warned = true; render(); return; }
+    }
+    S.errors = [];
+    t.score = TEST_QS.reduce((n, q, i) => n + (t.answers[i] === q.c ? 1 : 0), 0);
+    t.submitted = true; t.warned = false;
+    if (t.score >= PASS_MARK) { markDone("test"); }
+    else { S.app.steps.test = "action"; }
+    save(); render();
+  },
+  "pay-retest"(){
+    const t = S.app.data.test;
+    t.retestPaid = true; t.retestSlot = nextSlotLabel();
+    save(); render();
+    announce("Retest fee paid and slot booked, all from one screen.");
+  },
+  "start-retest"(){
+    const t = S.app.data.test;
+    S.app.data.test = { answers:{}, idx:0, submitted:false, score:null, attempt:t.attempt + 1, retestPaid:false, retestSlot:null };
+    delete S.app.steps.test;
+    save(); render();
+  },
+  "goto-licence"(){ markDone("licence"); go("#/apply/licence"); },
+  "download-licence"(){
+    const d = S.app.data;
+    const cats = d.vehicles.map(id => id + " (" + VEHICLE_BY_ID[id].title + ")").join(", ");
+    const doc = "<!doctype html><html lang=en><meta charset=utf-8><title>Learner licence (demo)</title>"
+      + "<body style='font-family:sans-serif;max-width:600px;margin:40px auto'>"
+      + "<div style='border:2px solid #0e2a47;border-radius:14px;overflow:hidden'>"
+      + "<div style='background:#0e2a47;color:#fff;padding:14px 20px'><b>LEARNER'S LICENCE · KARNATAKA</b><br><small>Digital demo document. Not valid for driving. Not issued by any government.</small></div>"
+      + "<div style='padding:20px'>"
+      + "<p>Licence number: <b>" + esc(S.app.number || APP_NUMBER) + "</b></p>"
+      + "<p>Name: <b>" + esc(d.details.name) + "</b></p>"
+      + "<p>Date of birth: <b>" + esc(d.eligibility.dob) + "</b></p>"
+      + "<p>Categories: <b>" + esc(cats) + "</b></p>"
+      + "<p>Issued by: <b>" + esc(rtoLabel(d.address.rto)) + " (demo)</b></p>"
+      + "</div></div><p style='color:#666'>Generated by the CivicFlow prototype with fictional data.</p></body></html>";
+    const blob = new Blob([doc], { type:"text/html" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "learner-licence-demo.html";
+    document.body.appendChild(a); a.click(); a.remove();
+    announce("Demo licence file downloaded.");
+  },
+  "print-licence"(){ window.print(); },
+  "focus-field"(el){
+    const t = document.getElementById(el.dataset.target);
+    if (t) { t.scrollIntoView({ block:"center" }); t.focus(); }
+  }
+};
+function receivePayment(){
+  const p = S.app.data.payment;
+  p.status = "received";
+  p.txn = "DEMO-TXN-847291";
+  if (!S.app.number) S.app.number = APP_NUMBER;
+  markDone("payment");
+}
+
+/* ============ EVENT DELEGATION ============ */
+document.addEventListener("click", ev => {
+  const el = ev.target.closest("[data-action]");
+  if (!el) return;
+  const fn = ACTIONS[el.dataset.action];
+  if (!fn) return;
+  if (el.tagName === "BUTTON" || el.dataset.action === "focus-field") ev.preventDefault();
+  fn(el);
+});
+document.addEventListener("submit", ev => {
+  ev.preventDefault();
+  if (ev.target.id === "signin-form") {
+    const em = val("si-email"), pw = document.getElementById("si-pass").value;
+    S.errors = [];
+    if (em !== DEMO_USER.email || pw !== DEMO_USER.password) {
+      S.errors.push({ id:"si-pass", msg:"That is not the demo account. Use the email and password shown above." });
+      render(); return;
+    }
+    S.user = { name: DEMO_USER.name, email: DEMO_USER.email };
+    if (!S.app) seedApplication("draft");   /* returning demo user resumes mid journey */
+    save(); go("#/dashboard"); render();
+  }
+  if (ev.target.id === "elig-form") finishEligibility();
+  if (ev.target.id === "details-form") finishDetails();
+  if (ev.target.id === "address-form") finishAddress();
+});
+document.addEventListener("change", ev => {
+  const inp = ev.target.closest("input[type=file][data-doc]");
+  if (!inp || !inp.files || !inp.files[0]) return;
+  const f = inp.files[0];
+  const id = inp.dataset.doc;
+  const okExt = /\.(jpe?g|png|pdf)$/i.test(f.name);
+  if (!okExt) {
+    S.errors = [{ id:"doc-" + id, msg:"That file type is not accepted. Use JPG, PNG or PDF. Your other uploads were kept." }];
+    render(); return;
+  }
+  S.errors = S.errors.filter(e => e.id !== "doc-" + id);
+  S.app.data.documents.uploads[id] = { name: f.name, sizeKB: Math.max(1, Math.round(f.size / 1024)) };
+  save(); render();
+});
+
+/* ============ E2E / DEMO SEEDS (?e2e=... before the #hash) ============ */
+function seedApplication(level){
+  /* levels: draft (through documents), paid, uncertain, passed */
+  const app = blankApplication();
+  const d = app.data;
+  d.eligibility = { existing:"none", dob:DEMO_SEED.dob, proceedAnyway:false };
+  d.vehicles = ["MCWG","LMV"];
+  d.details = { name:DEMO_SEED.name, gender:DEMO_SEED.gender, mobile:DEMO_SEED.mobile, email:DEMO_SEED.email, guardianName:"", guardianConsent:false };
+  d.address = { line:DEMO_SEED.addressLine, city:DEMO_SEED.city, district:DEMO_SEED.district, pin:DEMO_SEED.pin, rto:DEMO_SEED.rto, rtoManual:false, pinNotFound:false, reported:false };
+  d.identity = { method:"aadhaar", otpSent:true, verified:true, altDoc:"" };
+  d.documents.uploads = { sign:{ name:"aarav-signature.png", sizeKB:64 } };
+  ["start","eligibility","vehicle","details","address","identity","documents"].forEach(s => app.steps[s] = "done");
+  if (level === "paid" || level === "passed" || level === "uncertain") {
+    d.review = { confirmedVehicles:true, declared:true };
+    app.steps.review = "done";
+  }
+  if (level === "uncertain") {
+    d.payment = { status:"uncertain", txn:"DEMO-PEND-4471", outcome:"uncertain" };
+    app.steps.payment = "action";
+  }
+  if (level === "paid" || level === "passed") {
+    d.payment = { status:"received", txn:"DEMO-TXN-847291", outcome:"success" };
+    app.number = APP_NUMBER;
+    app.steps.payment = "done";
+  }
+  if (level === "passed") {
+    d.readiness = { done:true, results:["ok","ok","ok","ok","ok","ok"], failDemo:false };
+    d.practice = { idx:PRACTICE_QS.length, picked:null, score:4, answered:PRACTICE_QS.length, finished:true };
+    d.test = { answers:{0:1,1:2,2:1,3:2,4:2,5:1,6:1,7:1,8:1,9:0}, idx:9, submitted:true, score:10, attempt:1, retestPaid:false, retestSlot:null };
+    ["readiness","practice","test","licence"].forEach(s => app.steps[s] = "done");
+  }
+  S.app = app;
+}
+(function handleE2E(){
+  const e2e = new URLSearchParams(location.search).get("e2e");
+  if (!e2e) return;
+  if (e2e === "reset") { localStorage.removeItem(STORE_KEY); S.user = null; S.app = null; return; }
+  S.user = { name: DEMO_USER.name, email: DEMO_USER.email };
+  if (e2e === "login") { S.app = null; }
+  else if (["draft","paid","uncertain","passed"].includes(e2e)) seedApplication(e2e);
+  save();
+})();
+
+/* ============ INIT ============ */
+load();
+(function initFromE2E(){ /* e2e may have overwritten what load() read; e2e runs first by design */ })();
+window.addEventListener("hashchange", onRoute);
+onRoute();
+</script>
+
+<script>
+/* site-analytics beacon (same block as every live page) */
+(function(){
+  if (location.protocol === "file:" || location.hostname === "localhost") return;
+  var EP = "https://site-analytics.vaibhavpro9210.workers.dev/ping";
+  var sid = sessionStorage.getItem("va_sid");
+  if (!sid) { sid = Math.random().toString(36).slice(2) + Date.now().toString(36); sessionStorage.setItem("va_sid", sid); }
+  function send(kind){
+    try { navigator.sendBeacon(EP, new Blob([JSON.stringify({sid:sid, page:location.pathname, kind:kind})], {type:"text/plain"})); } catch(e){}
+  }
+  send("load");
+  setInterval(function(){ if (document.visibilityState === "visible") send("beat"); }, 60000);
+})();
+</script>
+</body>
+</html>
